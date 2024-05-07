@@ -3,8 +3,8 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 
 
 import HomeTabs from './HomeTabs';
-import ExerciciosScreen from '../pages/Exercicios';
-import ContatosScreen from '../pages/Contatos';
+import ExerciciosScreen from '../views/Exercicios/exercicios';
+import ContatosScreen from '../views/Contatos/contatos';
 
 const Drawer = createDrawerNavigator();
 
