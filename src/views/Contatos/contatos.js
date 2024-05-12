@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, Button, Linking,  Platform} from 'react-native';
 import SendIntentAndroid from 'react-native-send-intent';
 
+//Pra discar o numero, Rodar npm install react-native-send-intent
+
 const numeroContato = '+5521998366215'; // Número de telefone pra ligar
 const instagram = 'https://www.instagram.com/likefitnessgym?igsh=MXFpZzQ4YmY4NzlyMQ=='; //Insta da academia
 const numeroWhatsapp = '+5521998366215'; //Contato do Zap Zap
