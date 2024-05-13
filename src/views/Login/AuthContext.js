@@ -5,14 +5,22 @@ const AuthContext = createContext();
 
 // Provedor do contexto de autenticação que envolve a árvore de componentes
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLogedIn] = useState(false);
+
+  const login = () => {
+    setIsLogedIn(true);
+  };
+
+  const logout = () => {
+    setIsLogedIn(false);
+  };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+    <AuthContext.Provider value={{ isLoggedIn,  login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-// hook para consumir o contexto de autwnticação
+// hook para consumir o contexto de autenticação
 export const useAuth = () => useContext(AuthContext);
