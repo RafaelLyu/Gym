@@ -1,6 +1,6 @@
 import React from 'react';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
-import {AsyncStorage, View} from 'react-native';
+import {View} from 'react-native';
 
 
 // Configurar em português
@@ -27,7 +27,7 @@ export default function Calendario({ selectedDates, setSelectedDates }) {
         } else {
           // Se não estiver marcada, adicionar
           //Aqui define a cor da marcação
-          updatedSelectedDates = { ...selectedDates, [date.dateString]: { marked: true, selected: true, dotColor: 'green', selectedColor: 'green'} };
+          updatedSelectedDates = { ...selectedDates, [date.dateString]: {selected: true, selectedColor: '#00FF7F'} };
         }
     
         setSelectedDates(updatedSelectedDates);
@@ -42,6 +42,23 @@ export default function Calendario({ selectedDates, setSelectedDates }) {
       hideExtraDays={true}
       onDayPress={handleDayPress}
       markedDates={selectedDates}
+      
+      // Personalizando as cores dos dias
+      dayTextStyle={{
+        color: '#FFFFFF', // Cor do texto do dia
+      }}
+      // Personalizando as cores do fundo
+      theme={{
+        calendarBackground: '#0C0F14', // Cor de fundo do calendário
+        textSectionTitleColor: '#FFFFFF', // Cor do título do mês
+        todayTextColor: '#00FF7F', // Cor do texto do dia atual
+        dayTextColor: '#FFFFFF', // Cor do texto do dia
+        arrowColor: '#FFFFFF', // Cor das setas de navegação
+        monthTextColor: '#FFFFFF', // Cor do texto do mês
+        textDayFontFamily: 'monospace', // Fonte do texto do dia
+        textMonthFontFamily: 'monospace', // Fonte do texto do mês
+        textDayHeaderFontFamily: 'monospace', // Fonte do cabeçalho do dia
+      }}
     />
     </View>
   );

@@ -1,5 +1,8 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, TouchableHighlight, StyleSheet, Animated, ScrollView } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, TouchableHighlight, StyleSheet, Animated, ScrollView, Image, Button, TouchableOpacity, Modal} from 'react-native';
+
+import Calendario from '../Home/calendario';
+import {saveData, loadData } from '../Home/storage';
 
 // Função para renderizar a tabela
 const TabelaScreen = ({ tabelaData, onClose }) => {
@@ -61,6 +64,25 @@ const Rodape = () => {
 };
 
 export default function HomeScreen() {
+
+  const [modalCalendar, setModalCalendar] = useState(false);  // Modal calendario
+  const [selectedDates, setSelectedDates] = useState({});
+
+  // Carregando datas calendario
+  useEffect(() => {
+    const loadSavedDates = async () => {
+      const savedDates = await loadData('selectedDates');
+      if (savedDates) {
+        setSelectedDates(savedDates);
+      }
+    };
+    loadSavedDates();
+  }, []);
+
+  useEffect(() => {
+    saveData('selectedDates', selectedDates);
+  }, [selectedDates]);
+
   // Estado local para controlar a visibilidade de cada tabela
   const [tabelasVisiveis, setTabelasVisiveis] = useState({ 1: false, 2: false, 3: false });
 
@@ -106,6 +128,26 @@ export default function HomeScreen() {
           </View>
         ))}
       </ScrollView>
+      
+        
+      <TouchableOpacity style={styles.touchableCalendar}
+          onPress={() => setModalCalendar(true)}>
+          <Text style={styles.TouchableText}>Registrar Frequência</Text>
+        </TouchableOpacity>
+        
+        <Modal visible={modalCalendar} animationType="fade" transparent={true}>
+          <View 
+            style={styles.backgroundModalContainer}> 
+            <View style={styles.calendarContainer}>
+
+              <Calendario selectedDates={selectedDates} setSelectedDates={setSelectedDates}/>
+              
+              <TouchableOpacity onPress={() => setModalCalendar(false)} style={styles.touchableVoltar}>
+                <Text style={styles.TouchableText}>Voltar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       <Rodape />
     </View>
   );
@@ -186,5 +228,37 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#f0f0f0',
     alignItems: 'center',
+  },
+  
+  calendarContainer:{
+    backgroundColor: '#0C0F14', 
+    padding: 50,
+    borderRadius: 10, 
+    borderColor: '#FFFFFF', 
+    borderWidth: 1,
+    gap: 8
+  },
+  backgroundModalContainer:{
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: 'rgba(0,0,0,0.5)'
+  },
+  touchableCalendar: {
+    borderRadius: 10,
+    alignItems: 'center',
+    alignSelf: 'center',
+    padding: 20
+  },
+  touchableVoltar: {
+    backgroundColor: 'white', 
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center'
+  },
+  TouchableText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '0C0F14',
   },
 });
