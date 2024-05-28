@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Picker } from 'react-native';
 
-export default function AvaliacaoScreen() {
+const metas = [
+  { label: 'Emagrecer', valorDiario: "500 calorias por dia abaixo do seu gasto calórico total"}, 
+  { label: 'Ganhar Massa Muscular', valorDiario: "aumento de 300 calorias por dia"}, 
+  { label: 'Prática de Exercício', valorDiario: "em média 2000 calorias por dia"}, 
+  { label: 'Outra', valorDiario: 0 }, 
+];
 
+export default function AvaliacaoScreen() {
   const [meta, setMeta] = useState('');
+  const [metaSelecionada, setMetaSelecionada] = useState(null);
   const [imc, setIMC] = useState('');
   const [medidas, setMedidas] = useState({
     "cintura :": '',
@@ -11,22 +18,17 @@ export default function AvaliacaoScreen() {
     "pescoco :": '',
     "torax :": '',
     "quadril :": '',
-    "braço esquerdo :": '',
-    "braço direito :": '',
-    "antebraço esquerdo :": '',
-    "antebraço direito :": '',
-    "punho esquerdo :": '',
-    "punho direito :": '',
-    "coxa esquerda :": '',
-    "coxa direita :": '',
-    "panturrilha esquerda :": '',
-    "panturrilha direita :": '',
-    "altura :": '0',
-    "peso :": '0',
+    "braço esq. :": '',
+    "braço dir. :": '',
+    "antebraço esq. :": '',
+    "antebraço dir. :": '',
+    "punho esq. :": '',
+    "punho dir. :": '',
+    "coxa esq. :": '',
+    "coxa dir. :": '',
+    "panturrilha esq. :": '',
+    "panturrilha dir. :": '',
   });
-
-  const metas = ['Emagrecer', 'Ganhar Massa Muscular', 'Prática de Exercício', 'Outra'];
-
   const calcularIMC = (peso, altura) => {
     const pesoFloat = parseFloat(peso);
     const alturaFloat = parseFloat(altura);
@@ -63,19 +65,32 @@ export default function AvaliacaoScreen() {
     const newValue = value.replace(/[^0-9.]/g, '');
     setMedidas({ ...medidas, [key]: newValue });
   };
+  const handleMetaChange = (metaSelecionada) => {
+    setMeta(metaSelecionada);
+    const meta = metas.find(item => item.label === metaSelecionada);
+    setMetaSelecionada(meta);
+  };
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Avaliação</Text>
+      <Text style={styles.sectionTitle}>Minha meta</Text>
       <Picker
         style={styles.input}
         selectedValue={meta}
-        onValueChange={(itemValue, itemIndex) => setMeta(itemValue)}
-      ><Text style={styles.sectionTitle}>Meta</Text>
+        onValueChange={(itemValue) => handleMetaChange(itemValue)}
+      >
+        <Picker.Item label="Selecione a meta" value="" />
         {metas.map((value, index) => (
-          <Picker.Item key={index} label={value} value={value} />
+          <Picker.Item key={index} label={value.label} value={value.label} />
         ))}
       </Picker>
+      {metaSelecionada && (
+        <Text style={styles.result}>
+          Consumo calórico diário médio: {metaSelecionada.valorDiario}"consulte um nutricionista"
+        </Text>
+      )}
       <Text style={styles.sectionTitle}>Medidas Corporais</Text>
       <View style={styles.inputRow}>
         <Text style={styles.label}>Altura:</Text>
@@ -164,7 +179,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingVertical: 20,
     paddingHorizontal: 10,
-    alignSelf: 'center', // Centraliza os itens horizontalmente
+    alignSelf: 'center', 
   },
   title: {
     fontSize: 20,
@@ -204,18 +219,7 @@ const styles = StyleSheet.create({
     flex: 2,
     fontSize: 14, 
   },
-  inputDate: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 8,
-    fontSize: 14, 
-  },
-  dateInput: {
-    flexDirection: 'row',
-    flex: 2,
-  },
+   
   button: {
     backgroundColor: '#007bff',
     padding: 8,
