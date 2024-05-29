@@ -41,23 +41,27 @@ const currentTheme = theme === 'light' ? lightTheme : darkTheme;
 
   return (
     <View style={[styles.viewConteiner, {backgroundColor: currentTheme.background}]}>
-      <Text style={[styles.avisoText, {color: currentTheme.text}]}>Entre em contato conosco</Text>
-
-      <View style={styles.touchableView} >
+      <View style={styles.touchableView}>
+        <Text style={[styles.avisoText, {color: currentTheme.text}]}>Entre em contato conosco</Text>
+        <Text style={[styles.infoText, {color: currentTheme.text}]}>Atendimentos</Text>
+        <Text style={[styles.infoText, {color: currentTheme.text}]}>Seg a Sexta: 6 ás 22:00 | Sáb e Dom: 8 ás 12:00</Text>
+      </View>
 
         <TouchableOpacity onPress={discar} style={styles.ligarTouchable}>
           <Icon name='phone' size={25} color={'white'} />
         </TouchableOpacity>
 
-        <View style={styles.separator} />
-        <TouchableOpacity onPress={botaoWhatsapp} style={styles.whatsappTouchable}>
-          <Icon name='whatsapp' size={25} color={'white'} />        </TouchableOpacity>
+        <View style={[styles.separator, {backgroundColor: currentTheme.separator}]}/>
 
-        <View style={styles.separator} />
+        <TouchableOpacity onPress={botaoWhatsapp} style={styles.whatsappTouchable}>
+          <Icon name='whatsapp' size={25} color={'white'} />        
+        </TouchableOpacity>
+
+        <View style={[styles.separator, {backgroundColor: currentTheme.separator}]}/>
 
         <TouchableOpacity onPress={() => Linking.openURL(instagram)}>
           <LinearGradient
-            colors={['#0099FF', '#9B30FF', '#FF1493', '#FF4500', '#FFA500', '#FFFF00' ]}
+            colors={['#9B30FF', '#FF1493', '#FF4500', '#FFA500', '#FFFF00' ]}
             style={styles.instagramTouchable}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}>
@@ -66,11 +70,7 @@ const currentTheme = theme === 'light' ? lightTheme : darkTheme;
 
           </LinearGradient>
         </TouchableOpacity>
-      </View>
-      <Image
-        source={{uri: 'https://reactjs.org/logo-og.png'}}
-        style={{ width: 300, height: 100}}
-      />
+    
     </View>
   );
 }
@@ -79,28 +79,24 @@ const styles = StyleSheet.create({
   viewConteiner:{ 
     flex: 1, 
     alignItems: 'center', 
-    paddingVertical: 40
+    justifyContent:'space-evenly'
+
   },
   touchableView:{
-    alignItems:'center', 
-    justifyContent:'space-around',
-    paddingVertical: 40,
-    flex:1
-
+    alignItems: 'center', 
+    gap:10
   },
   avisoText:{
      fontSize: 24,
     },
-  contatoText:{
-    color: 'white', 
-    textAlign: 'center', 
-    fontSize:18
-
+  infoText:{
+    fontSize:15,
+    textAlign:'center'
   },
   ligarTouchable:{
-  backgroundColor: '#0C0F14', 
+  backgroundColor: '#0C0F11', 
   borderRadius: 10, 
-  borderColor: '#00FF7F', 
+  borderColor: '#32CD32', 
   borderWidth: 1, 
   paddingHorizontal:60,
   paddingVertical:10
@@ -120,9 +116,8 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    width: '100%', 
-    backgroundColor: '#CED0CE',
-    marginVertical: 20, 
+    width: '90%', 
+    marginVertical: 10, 
     
   },
 });

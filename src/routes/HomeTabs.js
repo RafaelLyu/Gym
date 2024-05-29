@@ -24,13 +24,23 @@ export default function HomeTabs() {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarLabel: () => null
-
+        tabBarLabel: () => null,
+        tabBarStyle:{
+          backgroundColor:'F0F0F0',
+          borderTopWidth:1,
+          borderTopColor:'#32CD32'
+          
+        }
+        
       })}
       tabBarOptions={{
-        activeTintColor: 'blue', 
-        inactiveTintColor: 'gray', 
+        activeTintColor: '#32CD32', 
+        inactiveTintColor: '#0C0F11', 
+        
+      
       }}
+      
+      
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false}}/>
       <Tab.Screen name="Perfil" component={PerfilScreen} options={{ headerShown: false }}/>

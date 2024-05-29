@@ -25,7 +25,7 @@ export default function PerfilScreen() {
   return (
     <View style={[styles.viewContainer, {backgroundColor: currentTheme.background}]}>
 
-      <Text style={styles.titleText}> Meu Perfil </Text>
+      <Text style={[styles.titleText, {color:currentTheme.text}]}> Meu Perfil </Text>
       
       <Image
         source={imagePath}
@@ -36,7 +36,7 @@ export default function PerfilScreen() {
       <Text style={[styles.matriculaText, {color: currentTheme.text }]}> Matricula: {matricula}</Text>
 
 
-      <View style={styles.infoContainer}>
+      <View style={[styles.infoContainer, {backgroundColor: currentTheme.backgroundInfoContainer, borderColor: currentTheme.borderInfoContainer}]}>
 
         <Text style={[styles.infoText, {color: currentTheme.text }]}>Data de inscrição - {dataInscricao}</Text>
         <Text style={[styles.infoText, {color: currentTheme.text }]}>Status: {status}</Text>
@@ -55,7 +55,7 @@ export default function PerfilScreen() {
       </View>
 
 
-      <View style={{flexDirection:'row', justifyContent:'center', gap:8, marginVertical:20}}>
+      <View style={{flexDirection:'row', justifyContent:'center', gap:8, marginVertical:20, alignItems:'center'}}>
         <Text  style={[styles.matriculaText, {color: currentTheme.text }]}>Alterar Senha</Text>
         <Icon name='lock' size={15} color={currentTheme.text} />
       </View>
@@ -76,12 +76,16 @@ const styles = StyleSheet.create({
     gap: 12,
     marginTop:30,
     borderRadius:10,
-    borderWidth:0.5,
-    borderColor:'#AEAEAE',
+    borderWidth:0.05,
     marginHorizontal:10,
     justifyContent:'space-evenly',
     alignItems:'flex-start',
-    paddingHorizontal:20
+    paddingHorizontal:20,
+    shadowOffset: { width: 0, height: 0},
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    shadowColor:'#000',
+    elevation: 5,
   },
   
   rowContainer:{
@@ -96,7 +100,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: "#00FF7F", //#8FBC8F/00FF7F/32CD32/#00FF7F
     margin: 20
   }, 
   NameText: {

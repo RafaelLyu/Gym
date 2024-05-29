@@ -1,12 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Função para salvar dados no AsyncStorage
 export const saveData = async (key, value) => {
-    await AsyncStorage.setItem(key, JSON.stringify(value)); 
+  try {
+    await AsyncStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.log("Erro ao salvar dados", error);
+  }
 };
 
-// Função para carregar dados do AsyncStorage
 export const loadData = async (key) => {
+  try {
     const value = await AsyncStorage.getItem(key);
     return value ? JSON.parse(value) : null;
+  } catch (error) {
+    console.log("Erro ao carregar dados", error);
+  }
 };

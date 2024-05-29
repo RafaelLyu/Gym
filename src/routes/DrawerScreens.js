@@ -1,26 +1,27 @@
 import React, {useState} from 'react';
 import {View, Image, Button, Text, StyleSheet, TouchableOpacity, Modal, Switch } from 'react-native';
 import { createDrawerNavigator} from "@react-navigation/drawer";
-import { ThemeProvider } from '../themes/ThemeContext';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import {imagePath} from '../../assets/assets';
-import {userName} from '../../assets/assets';
-
-
-import {useTheme} from '../themes/ThemeContext'; // Modo light/dark
-import {lightTheme, darkTheme } from '../themes/themes';
-
+import { NavigationContainer } from '@react-navigation/native';
 
 import HomeTabs from './HomeTabs';
 import AvaliacaoScreen from '../views/Avaliacao/avaliacao';
 import ExerciciosScreen from '../views/Exercicios/exercicios';
 import ContatosScreen from '../views/Contatos/contatos';
 
+
+import { ThemeProvider } from '../themes/ThemeContext';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {imagePath} from '../../assets/assets';
+import {userName} from '../../assets/assets';
+import {useTheme} from '../themes/ThemeContext'; // Modo light/dark
+import {lightTheme, darkTheme } from '../themes/themes';
+
+
 const Drawer = createDrawerNavigator();
 
 const icons = {
   Home: 'home',
-  Avaliação: 'bar-chart-o',
+  'Metas e Avaliação': 'bar-chart-o',
   Exercicios: 'th-list',
   Contatos: 'phone'
 };
@@ -34,7 +35,6 @@ function CustomDrawerContent(props) {
 
   return (
     
-    <View style={styles.backgroundDrawer}>
       <View style={[styles.drawerContainer, {backgroundColor: currentTheme.background}]}> {/*Drawer*/}
         
         {/*Opções de tela*/}
@@ -52,7 +52,7 @@ function CustomDrawerContent(props) {
           {props.state.routes.map((route, index) => (
             <View key={index} style={{marginBottom: 60, flexDirection:'row' }}>
               
-              <Icon name={icons[route.name]} size={20} style={[styles.icon, {color:currentTheme.icon}]} />
+              <Icon name={icons[route.name]} size={20}  onPress={() => props.navigation.navigate(route.name)} style={[styles.icon, {color:currentTheme.icon}]} />
 
               <Text
                 onPress={() => props.navigation.navigate(route.name)}
@@ -106,7 +106,6 @@ function CustomDrawerContent(props) {
           </View>
         </Modal>
       </View>
-    </View>
   );
 }
 
@@ -114,9 +113,22 @@ export default function DrawerScreens() {
   return (
     {/*Navegação*/},
     <ThemeProvider>
-      <Drawer.Navigator drawerContent={props => <CustomDrawerContent {...props} />}>
-        <Drawer.Screen name="Home" component={HomeTabs} options={{headerTitle: '' }}/>
-        <Drawer.Screen name="Avaliação" component={AvaliacaoScreen} />
+      <Drawer.Navigator 
+        drawerContent={props => <CustomDrawerContent {...props} />} 
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: 'F0F0F0', 
+              borderBottomWidth:1,
+              borderBottomColor:'#32CD32'
+            },
+            headerTitle: 'Like Fitness Gym',
+            headerTitleAlign: 'center',
+            headerTintColor: '#228B22',
+            
+          }}
+        >
+        <Drawer.Screen name="Home" component={HomeTabs}  />
+        <Drawer.Screen name="Metas e Avaliação" component={AvaliacaoScreen} />
         <Drawer.Screen name="Exercicios" component={ExerciciosScreen} />
         <Drawer.Screen name="Contatos" component={ContatosScreen} />
       </Drawer.Navigator>
@@ -127,19 +139,15 @@ export default function DrawerScreens() {
 // CSS
 const styles = StyleSheet.create({
   // Views
-  backgroundDrawer:{
-    flex: 1, 
-    backgroundColor: 'rgba(0,0,0,0.5)',    
-  },
+
   drawerContainer: {
     flex: 1, 
     padding: 20, 
     justifyContent:'space-between',
-    borderTopEndRadius:50,
-    borderBottomEndRadius:50,
   },
   navagationContainer:{
     marginTop: 30,
+    gap: 10
   },
   backgroundModalContainer:{
     flex: 1, 
@@ -181,10 +189,6 @@ const styles = StyleSheet.create({
     height: 50, 
     borderRadius: 25,
   },
-  //tasks  line-chart  wpforms heartbeat bar-chart-o list-alt
-
-
-  // th-list bolt
 
   // Botões
 
