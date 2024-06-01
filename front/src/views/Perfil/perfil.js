@@ -1,134 +1,124 @@
-import React, { useState } from 'react';
-import { View, ScrollView, Text, TextInput, StyleSheet } from 'react-native';
+import React from 'react';
+import {View, Image, Text, StyleSheet } from 'react-native';
+import {useTheme} from '../../themes/themeContext'; // Modo light/dark
+import {lightTheme, darkTheme } from '../../themes/themes';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { imagePath } from '../../../assets/assets';
+
 
 export default function PerfilScreen() {
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [endereco, setEndereco] = useState('');
-  const [telefone, setTelefone] = useState('');
-  const [date, setDate] = useState('');
 
+  // Dados perfil do usuario
+  const userName = 'Davi Soares da Silva';
+  const matricula = '00000000';
+  var dataVencimento = '08/06/2024';
+  var dataInscricao ='08/06/2024';
+  var status = 'Ativo';
+  var userNumber = '(21) 9999-8888';
+  var userEmail = 'testeteste@gmail.com'
+  
+  // Config de temas (dark ou light)
+  const {theme} = useTheme();
+  const currentTheme = theme === 'light' ? lightTheme : darkTheme;
+
+  //Tela
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Perfil do Cliente</Text>
-      <View style={styles.inputRow}>
-        <Text style={styles.label}>Nome:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder=" "
-          value={nome}
-          onChangeText={setNome}
-        />
-      </View>
-      <View style={styles.inputRow}>
-        <Text style={styles.label}>E-mail:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder=" "
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-        />
-      </View>
-      <View style={styles.inputRow}>
-        <Text style={styles.label}>Telefone:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder=" "
-          value={telefone}
-          onChangeText={setTelefone}
-          keyboardType="phone-pad"
-        />
-      </View>
-      <View style={styles.inputRow}>
-        <Text style={styles.label}>Endereço:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder=" "
-          value={endereco}
-          onChangeText={setEndereco}
-          keyboardType="address-line1"
-        />
-      </View>
-      <View style={styles.inputRow}>
-        <Text style={styles.label}>Data de nascimento:</Text>
-        <View style={styles.dateInput}>
-          <TextInput
-            style={[styles.inputDate, { marginRight: 5 }]}
-            placeholder="DD"
-            maxLength={2}
-            keyboardType="numeric"
-            onChangeText={(setDate) => {
-              // Adicionar lógica para lidar com a entrada do dia
-            }}
-          />
-          <TextInput
-            style={[styles.inputDate, { marginRight: 5 }]}
-            placeholder="MM"
-            maxLength={2}
-            keyboardType="numeric"
-            onChangeText={(setDate) => {
-              // Adicionar lógica para lidar com a entrada do mês
-            }}
-          />
-          <TextInput
-            style={styles.inputDate}
-            placeholder="AAAA"
-            maxLength={4}
-            keyboardType="numeric"
-            onChangeText={(setDate) => {
-              // Adicionar lógica para lidar com a entrada do ano
-            }}
-          />
+    <View style={[styles.viewContainer, {backgroundColor: currentTheme.background}]}>
+
+      <Text style={[styles.titleText, {color:currentTheme.text}]}> Meu Perfil </Text>
+      
+      <Image
+        source={imagePath}
+        style={styles.profilePic}
+      />
+
+      <Text style={[styles.NameText, {color: currentTheme.text }]}> {userName}</Text>
+      <Text style={[styles.matriculaText, {color: currentTheme.text }]}> Matricula: {matricula}</Text>
+
+
+      <View style={[styles.infoContainer, {backgroundColor: currentTheme.backgroundInfoContainer, borderColor: currentTheme.borderInfoContainer}]}>
+
+        <Text style={[styles.infoText, {color: currentTheme.text }]}>Data de inscrição - {dataInscricao}</Text>
+        <Text style={[styles.infoText, {color: currentTheme.text }]}>Status: {status}</Text>
+        <Text style={[styles.infoText, { color: currentTheme.text }]}>Data de Vencimento - {dataVencimento}</Text>
+
+        <View style={styles.rowContainer}>
+          <Text style={[styles.infoText, {color: currentTheme.text }]}>Contato: {userNumber} </Text>
+          <Icon name='edit' size={20} color={currentTheme.text}/>
         </View>
+        
+        <View style={styles.rowContainer}>
+          <Text style={[styles.infoText, {color: currentTheme.text }]}>E-mail: {userEmail}</Text>
+          <Icon name='edit' size={20} color={currentTheme.text} />
+        </View>
+
       </View>
-    </ScrollView>
+
+
+      <View style={{flexDirection:'row', justifyContent:'center', gap:8, marginVertical:20, alignItems:'center'}}>
+        <Text  style={[styles.matriculaText, {color: currentTheme.text }]}>Alterar Senha</Text>
+        <Icon name='lock' size={15} color={currentTheme.text} />
+      </View>
+
+    </View>
   );
 }
 
+// CSS
 const styles = StyleSheet.create({
-  container: {
+  // Views
+  viewContainer: {
     flexGrow: 1,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
+    gap: 8,
   },
-  title: {
-    fontSize: 20,
+  infoContainer: {
+    flexGrow: 1,
+    gap: 12,
+    marginTop:30,
+    borderRadius:10,
+    borderWidth:0.05,
+    marginHorizontal:10,
+    justifyContent:'space-evenly',
+    alignItems:'flex-start',
+    paddingHorizontal:20,
+    shadowOffset: { width: 0, height: 0},
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    shadowColor:'#000',
+    elevation: 5,
+  },
+  
+  rowContainer:{
+    flexDirection:'row', 
+    alignItems:'flex-start', 
+    gap:15
+  },
+
+ 
+  // Textos
+  titleText: {
+    fontSize: 25,
     fontWeight: 'bold',
-    marginBottom: 20,
     textAlign: 'center',
+    margin: 20
+  }, 
+  NameText: {
+    fontSize: 19,
+    textAlign: 'center'
   },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
+  matriculaText: {
+    fontSize: 15,
+    textAlign: 'center'
   },
-  label: {
-    flex: 1,
-    marginRight: 10,
-    textAlign: 'left',
-    fontSize: 16,
+  infoText: {
+    fontSize: 15,
   },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 16,
-  },
-  inputDate: {
-    flex: 1,
-    width: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 7,
-    fontSize: 12,
-  },
-  dateInput: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    flex: 1,
+ 
+  // Foto
+  profilePic: {
+    width: 100, 
+    height: 100, 
+    borderRadius: 50,
+    alignSelf: "center",
   },
 });
