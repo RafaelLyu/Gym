@@ -17,7 +17,7 @@ export default function DrawerScreens() {
       <Drawer.Screen name="Avaliação" component={AvaliacaoScreen} />
       <Drawer.Screen name="Exercicios" component={ExerciciosScreen} />
       <Drawer.Screen name="Contatos" component={ContatosScreen} />
-      <Drawer.Screen name="Cadrasto Aluno" component={CadrastoScreen}  />
+      <Drawer.Screen name="Cadastro Aluno" component={CadrastoScreen}  />
     </Drawer.Navigator>
   );
 }
