@@ -5,7 +5,7 @@ import { faUser, faLock, faEnvelope, faCalendarDays } from '@fortawesome/free-so
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function CadrastoScreen() {
+export default function CadastroScreen() {
     const [nome, setNome] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
