@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import DrawerScreens from './src/routes/DrawerScreens';
 import LoginScreen from './src/views/Login/login';
 import { AuthProvider, useAuth } from './src/views/Login/AuthContext';
+import {UserProvider } from './src/user/user';
 
 
 const Stack = createStackNavigator();
@@ -37,7 +38,9 @@ const App = () => {
 const WrappedApp = () => {
   return (
       <AuthProvider>
-        <App />
+        <UserProvider>
+          <App />
+        </UserProvider>
       </AuthProvider>
   );
 };

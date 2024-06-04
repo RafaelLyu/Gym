@@ -45,8 +45,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     setIsLoggedIn(false);
+    await AsyncStorage.removeItem("userData")
+    await AsyncStorage.removeItem("token")
   };
 
   return (
