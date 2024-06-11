@@ -2,9 +2,15 @@ import { Modal, View, Text, Button, StyleSheet, TouchableOpacity } from 'react-n
 import Calendario from '../calendar/calendario';
 import { saveData, loadData } from '../calendar/storage'
 import React, { useState, useEffect } from 'react';
+import { useTheme } from '../themes/themeContext'; // Modo light/dark
+import { lightTheme, darkTheme } from '../themes/themes';
 
 
 const ModalCalendar  = ({modalCalendar, setModalCalendar }) => {
+
+    // Config de temas (dark ou light)
+    const { theme } = useTheme();
+    const currentTheme = theme === 'light' ? lightTheme : darkTheme;
     const [selectedDates, setSelectedDates] = useState({}); 
 
     // Carregando datas calendario
@@ -23,18 +29,15 @@ const ModalCalendar  = ({modalCalendar, setModalCalendar }) => {
   }, [selectedDates]);
     return (
         <Modal visible={modalCalendar} animationType="fade" transparent={true} onRequestClose={() => {
-          setModalSerie(!modalSerie);
+          setModalCalendar(!modalCalendar);
         }}>
-        <View 
-          style={styles.backgroundCalendarContainer}> 
-          <View style={styles.calendarContainer}>
-
+        <View style={styles.backgroundCalendarContainer}> 
+          <View style={[styles.calendarContainer, {backgroundColor:currentTheme.background}]}>
             <Calendario selectedDates={selectedDates} setSelectedDates={setSelectedDates}/>
               
-            <TouchableOpacity onPress={() => setModalCalendar(false)} style={styles.touchableVoltar}>
-              <Text style={styles.TouchableText}>Voltar</Text>
+            <TouchableOpacity onPress={() => setModalCalendar(false)} style={[styles.touchableVoltar, {backgroundColor:currentTheme.backgroundOposto}]}>
+              <Text style={[styles.TouchableText, {color:currentTheme.textOposto}]}>Voltar</Text>
             </TouchableOpacity>
-          
           </View>
         </View>
       </Modal>
@@ -45,7 +48,7 @@ const ModalCalendar  = ({modalCalendar, setModalCalendar }) => {
         //Views
         container: {
           flex: 1,
-          backgroundColor:'F0F0F0',
+          backgroundColor:'#F0F0F0',
           gap:20,
       
         },
@@ -94,6 +97,6 @@ const ModalCalendar  = ({modalCalendar, setModalCalendar }) => {
         TouchableText: {
           fontSize: 15,
           fontWeight: 'bold',
-          color: '0C0F14',
+          color: '#0C0F14',
         },
       });

@@ -9,12 +9,12 @@ import ContatosScreen from '../views/Contatos/contatos';
 import CadastroScreen from '../views/Cadastro/cadastro'
 
 
-import { ThemeProvider } from '../themes/themeContext';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {imagePath} from '../../assets/assets';
 import {userName} from '../../assets/assets';
 import {useTheme} from '../themes/themeContext'; // Modo light/dark
 import {lightTheme, darkTheme } from '../themes/themes';
+import ModalLofoff from '../modal/modalLogoff';
 
 
 const Drawer = createDrawerNavigator();
@@ -35,95 +35,110 @@ function CustomDrawerContent(props) {
 
   return (
     
-      <View style={[styles.drawerContainer, {backgroundColor: currentTheme.background}]}> {/*Drawer*/}
+    <View style={[styles.drawerContainer, {backgroundColor: currentTheme.background}]}> {/*Drawer*/}
         
-        {/*Opções de tela*/}
-        <View style={styles.navagationContainer}>
-          <View style={styles.rowContainer}>
-            <Image
-              source={imagePath}
-              style={styles.profilePic}
-            />
-            <Text style={[styles.navagationText, {color: currentTheme.text}]}>{userName}</Text>
-          </View>
+      {/*info usuario*/}
+      <View style={styles.navagationContainer}>
+        <View style={styles.rowContainer}>
+          <Image
+            source={imagePath}
+            style={styles.profilePic}
+          />
+          <Text style={[styles.navagationText, {color: currentTheme.text}]}>{userName}</Text>
+        </View>
         
-          <View style={styles.separator} />
+        <View style={styles.separator} />
 
-          {props.state.routes.map((route, index) => (
-            <View key={index} style={{marginBottom: 60, flexDirection:'row' }}>
+        {/*navegação*/}
+        {props.state.routes.map((route, index) => (
+          <View key={index} style={{marginBottom: 60, flexDirection:'row' }}>
               
-              <Icon name={icons[route.name]} size={20}  onPress={() => props.navigation.navigate(route.name)} style={[styles.icon, {color:currentTheme.icon}]} />
-
-              <Text
-                onPress={() => props.navigation.navigate(route.name)}
-                style={[styles.navagationText, {color: currentTheme.text}]}>
-                {route.name}
-              </Text>
-
-            </View>
-          ))}
-        </View>
-
-        {/*Conteudo do Drawer*/}
-        <View style={styles.settingsContainer}>
-          
-          <View style={styles.separator} />
-
-          
-          <View style={styles.rowContainer}>
-            <Text style={[styles.settingsText, {color: currentTheme.text}]}>Modo escuro</Text>
-            
-            {/*Switch de tema*/}
-            <Switch
-              trackColor={{ false: '#777', true: '#8bf' }}
-              thumbColor={theme === 'light' ? '#fff' : '#7CFC00'}
-              value={theme === 'dark'}
-              onValueChange={toggleTheme}
+            <Icon 
+              name={icons[route.name]} 
+              size={20}  
+              onPress={() => props.navigation.navigate(route.name)} 
+              style={[styles.icon, {color:currentTheme.icon}]}
             />
-          </View>
 
-          <View style={styles.rowContainer}>
-            <TouchableOpacity 
-              onPress={() => setModalLogoff(true)}>
-              <Text style={{color: "red", fontSize: 15}}>Sair</Text>
-            </TouchableOpacity>
-            <Icon name='sign-out' size={20} color={'red'} />
-          </View>
+            <Text
+              onPress={() => props.navigation.navigate(route.name)}
+              style={[styles.navagationText, {color: currentTheme.text}]}>
+              {route.name}
+            </Text>
 
+          </View>
+        ))}
+      </View>
+
+      {/*Conteudo do Drawer*/}
+      <View style={styles.settingsContainer}>
+          
+        <View style={styles.separator} />
+
+        <View style={styles.rowContainer}>
+          <Text style={[styles.settingsText, { color: currentTheme.text }]}>Modo escuro</Text>
+
+          {/*Switch de tema*/}
+          <Switch
+            trackColor={{ false: '#777', true: '#8bf' }}
+            thumbColor={theme === 'light' ? '#fff' : '#7CFC00'}
+            value={theme === 'dark'}
+            onValueChange={toggleTheme}
+          />
         </View>
 
+        <View style={styles.rowContainer}>
+          <TouchableOpacity
+            onPress={() => setModalLogoff(true)}>
+            <Text style={{ color: "red", fontSize: 15 }}>Sair</Text>
+          </TouchableOpacity>
+          <Icon name='sign-out' size={20} color={'red'} />
+        </View>
 
-        {/*Modal de logoff*/}
-        <Modal visible={modalLogoff} animationType="fade" transparent={true}>
-          <View style={styles.backgroundModalContainer}> 
-            <View style={{ backgroundColor: 'white', padding: 30, borderRadius: 10}}>
-              <Text>Deseja mesmo sair?</Text>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Button onPress={() => setModalLogoff(false)} title="Voltar" />
-                <Button onPress={() => setModalLogoff(false)} title="Sair" />
-              </View>
-            </View>
-          </View>
-        </Modal>
       </View>
+      {/*Modal de logoff*/}
+
+
+      {/*Modal de logoff*/}
+      <ModalLofoff
+        modalLogoff={modalLogoff}
+        setModalLogoff={setModalLogoff}
+      />
+    </View>
   );
 }
 
 export default function DrawerScreens() {
+
+  const { theme } = useTheme();
+  const currentTheme = theme === 'light' ? lightTheme : darkTheme;
   return (
-    {/*Navegação*/},
-    <ThemeProvider>
       <Drawer.Navigator 
         drawerContent={props => <CustomDrawerContent {...props} />} 
           screenOptions={{
             headerStyle: {
-              backgroundColor: 'F0F0F0', 
-              borderBottomWidth:1,
+              backgroundColor: currentTheme.background, 
+              borderBottomWidth:0.5,
               borderBottomColor:'#32CD32'
             },
-            headerTitle: 'Like Fitness Gym',
+            headerTitle: () => (
+              <Image
+                source={require('../../assets/logo.webp')} // Substitua pelo caminho correto da sua logo
+                style={styles.logo}
+              />
+            ),
             headerTitleAlign: 'center',
-            headerTintColor: '#228B22',
+            headerTintColor: currentTheme.text,
+            headerTitleStyle:{
+              backgroundColor:'#228B22',
+              fontFamily:'Merriweather Regular',
+              fontSize:10,
+              borderRadius:50,
+              padding:8,
+              color:'white',
+              
+
+            }
             
           }}
         >
@@ -134,14 +149,12 @@ export default function DrawerScreens() {
         <Drawer.Screen name="Cadastro Aluno" component={CadastroScreen}  />
 
       </Drawer.Navigator>
-    </ThemeProvider>
   );
 }
 
 // CSS
 const styles = StyleSheet.create({
   // Views
-
   drawerContainer: {
     flex: 1, 
     padding: 20, 
@@ -150,12 +163,6 @@ const styles = StyleSheet.create({
   navagationContainer:{
     marginTop: 30,
     gap: 10
-  },
-  backgroundModalContainer:{
-    flex: 1, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    backgroundColor: 'rgba(0,0,0,0.5)'
   },
   settingsContainer:{
     gap:20
@@ -182,7 +189,7 @@ const styles = StyleSheet.create({
   separator: {
     height: 1,
     width: '100%', 
-    backgroundColor: '#CED0CE',
+    backgroundColor: '#373737',
     marginVertical: 20, 
     
   },
@@ -193,5 +200,9 @@ const styles = StyleSheet.create({
   },
 
   // Botões
+  logo:{
+    width:100,
+    height:100
+  }
 
 }); 
