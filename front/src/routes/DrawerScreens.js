@@ -34,9 +34,9 @@ function CustomDrawerContent(props) {
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
 
   return (
-    
+   
     <View style={[styles.drawerContainer, {backgroundColor: currentTheme.background}]}> {/*Drawer*/}
-        
+  
       {/*info usuario*/}
       <View style={styles.navagationContainer}>
         <View style={styles.rowContainer}>
