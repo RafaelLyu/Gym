@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, FlatList, ScrollView, Button, CheckBox, Picker, Alert } from 'react-native';
+import { useTheme } from '../../themes/themeContext'; // Importe o hook useTheme
+import { lightTheme, darkTheme } from '../../themes/themes'; // Importe os temas
 
 const exerciciosPorSerie = {
   "A": {
@@ -9,21 +11,17 @@ const exerciciosPorSerie = {
       "Desenvolvimento com barra", "Desenvolvimento com halteres", "Elevação lateral", "Elevação frontal", "Elevação posterior", "Remada alta", "Desenvolvimento Arnold", "Elevação lateral inclinada",
       "Rosca direta", "Rosca alternada com halteres", "Rosca martelo", "Rosca 21", "Tríceps pulley", "Tríceps testa", "Tríceps coice", "Extensão de tríceps na polia alta", "Flexão de braços diamante", "Rosca inversa", "Flexão de punho", "Extensão de punho"
     ],
-  
     "Parte Inferior do Corpo": [
       "Agachamento livre", "Agachamento na máquina", "Afundo", "Cadeira extensora", "Cadeira flexora", "Levantamento terra", "Passada",
       "Elevação pélvica", "Abdutora", "Adução de quadril", "Agachamento sumô", "Stiff",
       "Panturrilha sentado", "Panturrilha em pé", "Gêmeos na máquina", "Elevação de panturrilha unilateral"
     ],
-  
     "Abdominais": [
       "Crunch abdominal", "Prancha frontal", "Prancha lateral", "Elevação de pernas", "Russian twist", "Prancha com rotação de tronco", "Abdominal remador", "Prancha dinâmica", "Tesoura"
     ],
-  
     "Aeróbicos": [
       "Corrida", "Ciclismo", "Caminhada", "Elíptico", "Pular corda", "Subir escadas"
     ]
-  
   },
   "B": {
     "Parte Superior do Corpo": [
@@ -32,48 +30,43 @@ const exerciciosPorSerie = {
       "Desenvolvimento com barra", "Desenvolvimento com halteres", "Elevação lateral", "Elevação frontal", "Elevação posterior", "Remada alta", "Desenvolvimento Arnold", "Elevação lateral inclinada",
       "Rosca direta", "Rosca alternada com halteres", "Rosca martelo", "Rosca 21", "Tríceps pulley", "Tríceps testa", "Tríceps coice", "Extensão de tríceps na polia alta", "Flexão de braços diamante", "Rosca inversa", "Flexão de punho", "Extensão de punho"
     ],
-  
     "Parte Inferior do Corpo": [
       "Agachamento livre", "Agachamento na máquina", "Afundo", "Cadeira extensora", "Cadeira flexora", "Levantamento terra", "Passada",
       "Elevação pélvica", "Abdutora", "Adução de quadril", "Agachamento sumô", "Stiff",
       "Panturrilha sentado", "Panturrilha em pé", "Gêmeos na máquina", "Elevação de panturrilha unilateral"
     ],
-  
     "Abdominais": [
       "Crunch abdominal", "Prancha frontal", "Prancha lateral", "Elevação de pernas", "Russian twist", "Prancha com rotação de tronco", "Abdominal remador", "Prancha dinâmica", "Tesoura"
     ],
-  
     "Aeróbicos": [
       "Corrida", "Ciclismo", "Caminhada", "Elíptico", "Pular corda", "Subir escadas"
     ]
-  
   },
-  "C":{
+  "C": {
     "Parte Superior do Corpo": [
       "Supino reto", "Supino inclinado", "Supino declinado", "Crucifixo", "Fly", "Flexão de braço", "Pullover", "Cross-over",
       "Barra fixa", "Remada com barra", "Remada unilateral com halteres", "Puxada alta", "Puxada frontal", "Puxada na polia baixa", "Remada cavalinho", "Remada sentada",
       "Desenvolvimento com barra", "Desenvolvimento com halteres", "Elevação lateral", "Elevação frontal", "Elevação posterior", "Remada alta", "Desenvolvimento Arnold", "Elevação lateral inclinada",
       "Rosca direta", "Rosca alternada com halteres", "Rosca martelo", "Rosca 21", "Tríceps pulley", "Tríceps testa", "Tríceps coice", "Extensão de tríceps na polia alta", "Flexão de braços diamante", "Rosca inversa", "Flexão de punho", "Extensão de punho"
     ],
-  
     "Parte Inferior do Corpo": [
       "Agachamento livre", "Agachamento na máquina", "Afundo", "Cadeira extensora", "Cadeira flexora", "Levantamento terra", "Passada",
       "Elevação pélvica", "Abdutora", "Adução de quadril", "Agachamento sumô", "Stiff",
       "Panturrilha sentado", "Panturrilha em pé", "Gêmeos na máquina", "Elevação de panturrilha unilateral"
     ],
-  
     "Abdominais": [
       "Crunch abdominal", "Prancha frontal", "Prancha lateral", "Elevação de pernas", "Russian twist", "Prancha com rotação de tronco", "Abdominal remador", "Prancha dinâmica", "Tesoura"
     ],
-  
     "Aeróbicos": [
       "Corrida", "Ciclismo", "Caminhada", "Elíptico", "Pular corda", "Subir escadas"
     ]
-  
   },
 };
 
 export default function ExerciciosScreen() {
+  const { theme } = useTheme();
+  const currentTheme = theme === 'light' ? lightTheme : darkTheme;
+
   const [aluno, setAluno] = useState('');
   const [serie, setSerie] = useState('');
   const [exercicios, setExercicios] = useState({});
@@ -134,9 +127,9 @@ export default function ExerciciosScreen() {
         value={!!checkedItems[item]}
         onValueChange={(newValue) => handleCheckBoxChange(item, newValue)}
       />
-      <Text style={styles.exerciseText}>{item}</Text>
+      <Text style={[styles.exerciseText, { color: currentTheme.text }]}>{item}</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { borderColor: currentTheme.border, color: currentTheme.text }]}
         placeholder="Quantidade"
         keyboardType="string"
         value={quantidades[item]}
@@ -146,21 +139,22 @@ export default function ExerciciosScreen() {
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+    <ScrollView contentContainerStyle={[styles.scrollViewContainer, { backgroundColor: currentTheme.background }]}>
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Nome do Aluno:</Text>
+        <Text style={[styles.label, { color: currentTheme.text }]}>Nome do Aluno:</Text>
         <TextInput
-          style={styles.textInput}
+          style={[styles.textInput, { borderColor: currentTheme.border, color: currentTheme.text }]}
           placeholder="Digite o nome do aluno"
+          placeholderTextColor={currentTheme.placeholder}
           value={aluno}
           onChangeText={setAluno}
         />
       </View>
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Selecione a Série:</Text>
+        <Text style={[styles.label, { color: currentTheme.text }]}>Selecione a Série:</Text>
         <Picker
           selectedValue={serie}
-          style={styles.picker}
+          style={[styles.picker, { borderColor: currentTheme.border, color: currentTheme.text }]}
           onValueChange={(itemValue) => setSerie(itemValue)}
         >
           <Picker.Item label="Selecione a série" value="" />
@@ -171,7 +165,7 @@ export default function ExerciciosScreen() {
       </View>
       {Object.entries(exercicios).map(([categoria, listaExercicios]) => (
         <View key={categoria} style={styles.listContainer}>
-          <Text style={styles.partTitle}>{categoria}</Text>
+          <Text style={[styles.partTitle, { color: currentTheme.text }]}>{categoria}</Text>
           <FlatList
             data={listaExercicios}
             keyExtractor={(item) => item}
@@ -181,7 +175,7 @@ export default function ExerciciosScreen() {
         </View>
       ))}
       <View style={styles.submitButtonContainer}>
-        <Button title="Submit" onPress={handleSubmit} />
+        <Button title="Enviar" onPress={handleSubmit} color={currentTheme.button} />
       </View>
     </ScrollView>
   );
@@ -202,7 +196,6 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 5,
     padding: 8,
     height: 40,
@@ -210,8 +203,8 @@ const styles = StyleSheet.create({
   picker: {
     height: 40,
     borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 5,
+    backgroundColor: 'transparent',
   },
   listContainer: {
     marginBottom: 20,
@@ -232,7 +225,6 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 5,
     padding: 8,
     marginLeft: 10,

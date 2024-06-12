@@ -2,8 +2,9 @@ import React from 'react';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import {View} from 'react-native';
 
+import { useTheme } from '../themes/themeContext'; // Modo light/dark
+import { lightTheme, darkTheme } from '../themes/themes';
 
-// Configurar em português
 LocaleConfig.locales['pt-br'] = {
     monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
     monthNamesShort: ['Jan.', 'Fev.', 'Mar.', 'Abr.', 'Mai.', 'Jun.', 'Jul.', 'Ago.', 'Set.', 'Out.', 'Nov.', 'Dez.'],
@@ -11,11 +12,14 @@ LocaleConfig.locales['pt-br'] = {
     dayNamesShort: ['Dom.', 'Seg.', 'Ter.', 'Qua.', 'Qui.', 'Sex.', 'Sáb.'],
 };
   
-LocaleConfig.defaultLocale = 'pt-br'; // Defini como localização padrão
+LocaleConfig.defaultLocale = 'pt-br';
 
 
 
 export default function Calendario({ selectedDates, setSelectedDates }) {
+  // Config de temas (dark ou light)
+  const { theme } = useTheme();
+  const currentTheme = theme === 'light' ? lightTheme : darkTheme;
 
     const handleDayPress = (date) => {
 
@@ -27,7 +31,7 @@ export default function Calendario({ selectedDates, setSelectedDates }) {
         } else {
           // Se não estiver marcada, adicionar
           //Aqui define a cor da marcação
-          updatedSelectedDates = { ...selectedDates, [date.dateString]: {selected: true, selectedColor: '#00FF7F'} };
+          updatedSelectedDates = { ...selectedDates, [date.dateString]: {selected: true, selectedColor: '#32CD32'} };
         }
     
         setSelectedDates(updatedSelectedDates);
@@ -42,22 +46,20 @@ export default function Calendario({ selectedDates, setSelectedDates }) {
       hideExtraDays={true}
       onDayPress={handleDayPress}
       markedDates={selectedDates}
-      
-      // Personalizando as cores dos dias
+  
       dayTextStyle={{
-        color: '#FFFFFF', // Cor do texto do dia
+        color: currentTheme.dayTextStyle, 
       }}
-      // Personalizando as cores do fundo
       theme={{
-        calendarBackground: '#0C0F14', // Cor de fundo do calendário
-        textSectionTitleColor: '#FFFFFF', // Cor do título do mês
-        todayTextColor: '#00FF7F', // Cor do texto do dia atual
-        dayTextColor: '#FFFFFF', // Cor do texto do dia
-        arrowColor: '#FFFFFF', // Cor das setas de navegação
-        monthTextColor: '#FFFFFF', // Cor do texto do mês
-        textDayFontFamily: 'monospace', // Fonte do texto do dia
-        textMonthFontFamily: 'monospace', // Fonte do texto do mês
-        textDayHeaderFontFamily: 'monospace', // Fonte do cabeçalho do dia
+        calendarBackground: currentTheme.background,
+        textSectionTitleColor: currentTheme.text,
+        todayTextColor: currentTheme.todayTextColor,
+        dayTextColor: currentTheme.text,
+        arrowColor: currentTheme.text,
+        monthTextColor: currentTheme.text,
+        textDayFontFamily: 'monospace',
+        textMonthFontFamily: 'monospace',
+        textDayHeaderFontFamily: 'monospace',
       }}
     />
     </View>

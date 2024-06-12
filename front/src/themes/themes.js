@@ -1,25 +1,27 @@
 export const lightTheme = {
-    background: '#F0F0F0', // F0F0F0
-    backgroundAlternativo: '#000000',
+    background: '#F0F0F0', 
+    backgroundOposto: '#000000',
+    backgroundAlternativo:'#DCDCDC', //F8F8F8
     text: '#000000',
-    textAlternativo:'#FFFFFF',
+    textOposto:'#FFFFFF',
     icon: '#000000',
-    backgroundInfoContainer:'#F8F8FF',
-    borderInfoContainer:'#32CD32',
-    separator:'#32CD32'
+    separator:'#32CD32',
+    border:'#32CD32',
+    todayTextColor: '#32CD32', // Cor do texto do dia atual 326D32
 
-    // Outros estilos específicos para o tema claro
+    //  f5f5f5
   };
   
   export const darkTheme = {
-    background: '#0C0F11',
-    backgroundAlternativo: '#FFFFFF',
-    text: '#FFFFFF',
-    textAlternativo:'#000000',
-    icon: '#FFFFFF',
-    backgroundInfoContainer:'#0C0F14',
-    borderInfoContainer:'#326D32',
-    separator:'#CED0CE'
-    // Outros estilos específicos para o tema escuro
+    background: '#121212',
+    backgroundOposto: '#F0F0F0',
+    backgroundAlternativo:'#1E1E1E',
+    text: '#F0F0F0',
+    textOposto:'#121212',
+    icon: '#F0F0F0',
+    separator:'#373737',
+    border:'#32CD32',
+    todayTextColor: '#32CD32',//Cor do texto do dia atual no calendario
+
   };
   
