@@ -9,21 +9,25 @@ import ContatosScreen from '../views/Contatos/contatos';
 import CadastroScreen from '../views/Cadastro/cadastro'
 
 
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome6';
 import {imagePath} from '../../assets/assets';
 import {userName} from '../../assets/assets';
 import {useTheme} from '../themes/themeContext'; // Modo light/dark
 import {lightTheme, darkTheme } from '../themes/themes';
 import ModalLofoff from '../modal/modalLogoff';
+//medal dumbbell arrow-right-from-bracket    id-card
+
+//pen-to-square
 
 
 const Drawer = createDrawerNavigator();
 
 const icons = {
-  Home: 'home',
-  'Metas e Avaliação': 'bar-chart-o',
-  Exercicios: 'th-list',
-  Contatos: 'phone'
+  Home: 'house',
+  'Metas e Avaliação': 'medal',
+  Exercicios: 'dumbbell',
+  Contatos: 'phone',
+  'Cadastro Aluno': 'pen-to-square'
 };
 
 function CustomDrawerContent(props) {
@@ -55,7 +59,7 @@ function CustomDrawerContent(props) {
               
             <Icon 
               name={icons[route.name]} 
-              size={20}  
+              size={16}  
               onPress={() => props.navigation.navigate(route.name)} 
               style={[styles.icon, {color:currentTheme.icon}]}
             />
@@ -92,7 +96,7 @@ function CustomDrawerContent(props) {
             onPress={() => setModalLogoff(true)}>
             <Text style={{ color: "red", fontSize: 15 }}>Sair</Text>
           </TouchableOpacity>
-          <Icon name='sign-out' size={20} color={'red'} />
+          <Icon name='arrow-right-from-bracket' size={20} color={'red'} onPress={() => setModalLogoff(true)}/>
         </View>
 
       </View>
@@ -118,8 +122,7 @@ export default function DrawerScreens() {
           screenOptions={{
             headerStyle: {
               backgroundColor: currentTheme.background, 
-              borderBottomWidth:0.5,
-              borderBottomColor:'#32CD32'
+              borderBottomColor: currentTheme.border
             },
             headerTitle: () => (
               <Image

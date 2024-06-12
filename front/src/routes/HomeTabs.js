@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome6';
 
 import HomeScreen from '../views/Home/home';
 import PerfilScreen from '../views/Perfil/perfil';
@@ -18,14 +18,15 @@ export default function HomeTabs() {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
+          let iconSize = 20;
 
           if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home';
+            iconName = 'house';
           } else if (route.name === 'Perfil') {
-            iconName = focused ? 'user-o' : 'user-o';
+            iconName = 'user';
           }
 
-          return <Icon name={iconName} size={size} color={color} />;
+          return <Icon name={iconName} size={iconSize} color={color} />;
         },
         tabBarLabel: () => null,
         tabBarStyle: {

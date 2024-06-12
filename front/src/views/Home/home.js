@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, FlatList, ScrollView} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import Geolocation from '@react-native-community/geolocation';
-
+import Icon from 'react-native-vector-icons/FontAwesome6';
 
 import ModalSerie from '../../modal/modalSerie';
 import ModalCalendar  from '../../modal/modalCalendar';
@@ -23,7 +22,7 @@ export default function HomeScreen() {
 
   const [isWithinTolerance, setIsWithinTolerance] = useState(false);
   const targetLocation = { lat: -22.852672105683173, lng: -43.46786505738011 };
-  const tolerance = 10; // Tolerância em metros
+  const tolerance = 1000000; // Tolerância em metros
 
   // Dados das séries
   const series = [
@@ -96,15 +95,15 @@ export default function HomeScreen() {
     <ScrollView showsVerticalScrollIndicator={false} style={[styles.container, { backgroundColor: currentTheme.background }]}>
       <View style={styles.rowContainer}>
         <View style={styles.calendarButtonContainer}>
-          <Icon name='calendar' size={20} color={currentTheme.icon} onPress={() => setModalCalendar(true)} />
+          <Icon name='calendar-days' size={25} color={currentTheme.icon} onPress={() => setModalCalendar(true)} />
         </View>
         {isWithinTolerance && (
-          <View style={{marginStart: 20}}>
+          <View style={[{marginStart: 16, borderRadius:10,}, {backgroundColor:currentTheme.backgroundAlternativo}]}>
             <Text style={[styles.alertText, { color: currentTheme.text }]}>Está na academia?</Text>
 
             <View style={styles.alertContainer}>
               <Text style={[styles.alertText, { color: currentTheme.text }]}>Marque sua presença !</Text>
-              <Icon name='user' size={15} color={currentTheme.icon} />
+              <Icon name='face-smile-wink' size={22} color='#000000' style={{marginEnd:10, backgroundColor:'yellow', borderRadius:500}}/>
             </View>
           </View>
 
@@ -210,5 +209,7 @@ const styles = StyleSheet.create({
   alertText: {
     fontSize: 16,
     marginVertical: 15,
+    marginStart: 10
+
   },
 });

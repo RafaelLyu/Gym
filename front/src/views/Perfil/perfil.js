@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Image, Text, StyleSheet, ScrollView} from 'react-native';
 import { useTheme } from '../../themes/themeContext'; // Modo light/dark
 import { lightTheme, darkTheme } from '../../themes/themes';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome6';
 import { imagePath } from '../../../assets/assets';
 
 export default function PerfilScreen() {
@@ -30,7 +30,7 @@ export default function PerfilScreen() {
 
         <Text style={[styles.titleText,  {color: currentTheme.text}]}> Meu Perfil</Text>
 
-        <Image source={imagePath} style={styles.profilePic} />
+        <Image source={(imagePath)} style={styles.profilePic} />
 
         <Text style={[styles.NameText, {color: currentTheme.text}]}> {userName}</Text>
 
@@ -48,18 +48,18 @@ export default function PerfilScreen() {
 
         <View style={styles.rowContainer}>
           <Text style={[styles.infoText, { color: currentTheme.text }]}>Contato: {userNumber} </Text>
-          <Icon name='edit' size={20} color={currentTheme.text} />
+          <Icon name='pen-to-square' size={20} color={currentTheme.text} />
         </View>
 
         <View style={styles.rowContainer}>
           <Text style={[styles.infoText, { color: currentTheme.text }]}>E-mail: {userEmail}</Text>
-          <Icon name='edit' size={20} color={currentTheme.text} />
+          <Icon name='pen-to-square' size={20} color={currentTheme.text} />
         </View>
       </View>
 
       <View style={[styles.alterarSenhaContainer, { backgroundColor: currentTheme.background }]}>
         <Text style={[styles.infoText, { color: currentTheme.text }]}>Alterar Senha</Text>
-        <Icon name='lock' size={15} color={currentTheme.text} />
+        <Icon name='lock' size={13} color={currentTheme.text} />
       </View>
     </ScrollView>
   );
