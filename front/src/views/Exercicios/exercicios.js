@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, Button, CheckBox } from 'react-native';
+import { View, Text, TextInput, StyleSheet, FlatList, ScrollView, Button, CheckBox, Picker, Alert } from 'react-native';
 
 export default function ExerciciosScreen() {
+  const { theme } = useTheme();
+  const currentTheme = theme === 'light' ? lightTheme : darkTheme;
+
   const [aluno, setAluno] = useState('');
   const [workoutName, setWorkoutName] = useState('');
   const [workoutDescription, setWorkoutDescription] = useState('');
   const [exercicios, setExercicios] = useState({});
   const [quantidades, setQuantidades] = useState({});
   const [checkedItems, setCheckedItems] = useState({});
-  const [memberId, setMemberId] = useState(null); // Inicialmente null
-  const [errorMessage, setErrorMessage] = useState(''); // Estado para armazenar a mensagem de erro
-  const [successMessage, setSuccessMessage] = useState(''); // Estado para armazenar a mensagem de sucesso
+  const [memberId, setMemberId] = useState(null); 
+  const [errorMessage, setErrorMessage] = useState(''); 
+  const [successMessage, setSuccessMessage] = useState(''); 
 
   useEffect(() => {
     fetch('http://192.168.0.12:8005/api/exercicios', {})
@@ -121,9 +124,9 @@ export default function ExerciciosScreen() {
         value={!!checkedItems[item.ExerciseName]}
         onValueChange={(newValue) => handleCheckBoxChange(item.ExerciseName, newValue)}
       />
-      <Text style={styles.exerciseText}>{item.ExerciseName}</Text>
+      <Text style={styles.exerciseText}>{item}</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { borderColor: currentTheme.border, color: currentTheme.text }]}
         placeholder="Quantidade"
         keyboardType="numeric"
         value={quantidades[item.ExerciseName]}
@@ -133,53 +136,44 @@ export default function ExerciciosScreen() {
   );
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Nome do Aluno:</Text>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Digite o nome do aluno"
-            value={aluno}
-            onChangeText={handleAlunoChange}
+    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Nome do Aluno:</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Digite o nome do aluno"
+          value={aluno}
+          onChangeText={setAluno}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Selecione a Série:</Text>
+        <Picker
+          selectedValue={serie}
+          style={styles.picker}
+          onValueChange={(itemValue) => setSerie(itemValue)}
+        >
+          <Picker.Item label="Selecione a série" value="" />
+          <Picker.Item label="Série A" value="A" />
+          <Picker.Item label="Série B" value="B" />
+          <Picker.Item label="Série C" value="C" />
+        </Picker>
+      </View>
+      {Object.entries(exercicios).map(([categoria, listaExercicios]) => (
+        <View key={categoria} style={styles.listContainer}>
+          <Text style={styles.partTitle}>{categoria}</Text>
+          <FlatList
+            data={listaExercicios}
+            keyExtractor={(item) => item}
+            renderItem={renderItem}
+            scrollEnabled={false} // Desabilita a rolagem individual das FlatLists
           />
         </View>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Nome do Treino:</Text>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Digite o nome do treino"
-            value={workoutName}
-            onChangeText={setWorkoutName}
-          />
-        </View>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Descrição do Treino:</Text>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Digite a descrição do treino"
-            value={workoutDescription}
-            onChangeText={setWorkoutDescription}
-          />
-        </View>
-        <Text style={styles.sectionTitle}>Exercícios</Text>
-        <View style={styles.exercisesContainer}>
-          <ScrollView contentContainerStyle={styles.exercisesScrollView}>
-            {Object.entries(exercicios).map(([categoria, listaExercicios]) => (
-              <View key={categoria} style={styles.listContainer}>
-                <Text style={styles.partTitle}>{categoria}</Text>
-                {listaExercicios.map(renderItem)}
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-        {successMessage ? <Text style={styles.successText}>{successMessage}</Text> : null}
-        <View style={styles.submitButtonContainer}>
-          <Button title="Submit" onPress={handleSubmit} disabled={!memberId} />
-        </View>
-      </ScrollView>
-    </View>
+      ))}
+      <View style={styles.submitButtonContainer}>
+        <Button title="Submit" onPress={handleSubmit} />
+      </View>
+    </ScrollView>
   );
 }
 
@@ -200,21 +194,15 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 5,
     padding: 8,
     height: 40,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  exercisesContainer: {
-    height: 300, // Ajuste a altura conforme necessário
-  },
-  exercisesScrollView: {
-    paddingVertical: 10,
+  picker: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
   },
   listContainer: {
     marginBottom: 20,
@@ -235,7 +223,6 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 5,
     padding: 8,
     marginLeft: 10,

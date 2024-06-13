@@ -6,6 +6,7 @@ import DrawerScreens from './src/routes/DrawerScreens';
 import LoginScreen from './src/views/Login/login';
 import { AuthProvider, useAuth } from './src/views/Login/AuthContext';
 import {UserProvider } from './src/user/user';
+import { ThemeProvider } from './src/themes/themeContext';
 
 
 const Stack = createStackNavigator();
@@ -14,7 +15,7 @@ const App = () => {
   
   const { isLoggedIn } = useAuth();
   return (
-   
+    <ThemeProvider>
     <NavigationContainer>
       <Stack.Navigator>
         {isLoggedIn ? (
@@ -32,6 +33,8 @@ const App = () => {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+    </ThemeProvider>
+
   );
 };
 

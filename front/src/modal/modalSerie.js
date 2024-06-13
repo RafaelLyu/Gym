@@ -1,6 +1,8 @@
 import React from 'react';
-import { Modal, View, Text, Button, FlatList, StyleSheet, ScrollView } from 'react-native';
+import { Modal, View, Text, Button, TouchableOpacity, FlatList, StyleSheet, ScrollView } from 'react-native';
 
+import { useTheme } from '../themes/themeContext'; // Modo light/dark
+import { lightTheme, darkTheme } from '../themes/themes';
 const ModalSerie = ({ modalSerie, setModalSerie, data }) => {
   // Função para extrair a chave de cada item
   const keyExtractor = (item) => {
@@ -10,8 +12,6 @@ const ModalSerie = ({ modalSerie, setModalSerie, data }) => {
     }
     return item.WorkoutExID.toString();
   };
-
-  // Renderização de cada item na lista
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <Text style={styles.item}>{item.exerciseName}</Text>
@@ -19,10 +19,7 @@ const ModalSerie = ({ modalSerie, setModalSerie, data }) => {
       {item.Sets && <Text style={styles.detail}>Sets: {item.Sets}</Text>}
     </View>
   );
-
-  // Pegar a descrição do primeiro item, assumindo que todos têm a mesma descrição
   const description = data.length > 0 ? data[0].description : '';
-
   return (
     <Modal
       animationType="fade"
@@ -103,13 +100,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     width: '100%',
   },
-  item: {
+  //Textos
+  modalText: {
+    marginVertical: 15,
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+    backgroundColor:'#32CD32',
+    borderRadius:20,
+    color:'white',
+    paddingVertical:10,
+    color:'#F0F0F0'
+
+
+  },
+  itemText: {
     fontSize: 16,
     fontWeight: 'bold',
+    margin:10
   },
-  detail: {
+  detailText: {
     fontSize: 14,
     color: 'gray',
+    marginStart:10
   },
   closeButton: {
     marginTop: 20,
