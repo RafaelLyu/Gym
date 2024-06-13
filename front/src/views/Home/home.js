@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Geolocation from '@react-native-community/geolocation';
 import { useUser } from '../../user/user'; // Importando o contexto do usuário
 
+
 import ModalSerie from '../../modal/modalSerie';
 import ModalCalendar from '../../modal/modalCalendar';
 import { useTheme } from '../../themes/themeContext'; // Importa o contexto do tema
@@ -50,6 +51,19 @@ export default function HomeScreen() {
       return acc;
     }, {});
   };
+
+  
+  const { theme } = useTheme();
+  const currentTheme = theme === 'light' ? lightTheme : darkTheme;
+
+  const [modalCalendar, setModalCalendar] = useState(false);  // Modal calendario
+  const [modalSerie, setModalSerie] = useState(false); //Modal de serie
+  const [modalData, setModalData] = useState([]); //Dados da serie
+
+  const [isWithinTolerance, setIsWithinTolerance] = useState(false);
+  const targetLocation = { lat: -22.852672105683173, lng: -43.46786505738011 };
+  const tolerance = 1000000; // Tolerância em metros
+
 
   useEffect(() => {
     const targetLocation = { lat: -23.55052, lng: -46.633308 }; // Substitua com as coordenadas de destino
@@ -105,11 +119,17 @@ export default function HomeScreen() {
     <ScrollView showsVerticalScrollIndicator={false} style={[styles.container, { backgroundColor: currentTheme.background }]}>
       <View style={styles.rowContainer}>
         <View style={styles.calendarButtonContainer}>
-          <Icon name='calendar' size={20} color={currentTheme.icon} onPress={() => setModalCalendar(true)} />
+          <Icon name='calendar-days' size={25} color={currentTheme.icon} onPress={() => setModalCalendar(true)} />
         </View>
         {isWithinTolerance && (
-          <View style={styles.alertContainer}>
+          <View style={[{marginStart: 16, borderRadius:10,}, {backgroundColor:currentTheme.backgroundAlternativo}]}>
             <Text style={[styles.alertText, { color: currentTheme.text }]}>Está na academia?</Text>
+
+            <View style={styles.alertContainer}>
+              <Text style={[styles.alertText, { color: currentTheme.text }]}>Marque sua presença !</Text>
+              <Icon name='face-smile-wink' size={22} color='#000000' style={{marginEnd:10, backgroundColor:'yellow', borderRadius:500}}/>
+            </View>
+
           </View>
         )}
       </View>
@@ -216,6 +236,8 @@ const styles = StyleSheet.create({
   alertText: {
     fontSize: 16,
     marginVertical: 15,
+    marginStart: 10
+
   },
 });
 

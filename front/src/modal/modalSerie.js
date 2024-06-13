@@ -1,9 +1,14 @@
 import React from 'react';
-import { Modal, View, Text, Button, TouchableOpacity, FlatList, StyleSheet, ScrollView } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet, ScrollView } from 'react-native';
 
 import { useTheme } from '../themes/themeContext'; // Modo light/dark
 import { lightTheme, darkTheme } from '../themes/themes';
+
 const ModalSerie = ({ modalSerie, setModalSerie, data }) => {
+  // Config de temas (dark ou light)
+  const { theme } = useTheme();
+  const currentTheme = theme === 'light' ? lightTheme : darkTheme;
+
   // Função para extrair a chave de cada item
   const keyExtractor = (item) => {
     if (!item || !item.WorkoutExID) {
@@ -20,6 +25,7 @@ const ModalSerie = ({ modalSerie, setModalSerie, data }) => {
     </View>
   );
   const description = data.length > 0 ? data[0].description : '';
+
   return (
     <Modal
       animationType="fade"
@@ -106,23 +112,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
     fontWeight: 'bold',
-    backgroundColor:'#32CD32',
-    borderRadius:20,
-    color:'white',
-    paddingVertical:10,
-    color:'#F0F0F0'
-
-
+    backgroundColor: '#32CD32',
+    borderRadius: 20,
+    color: '#F0F0F0',
+    paddingVertical: 10,
   },
   itemText: {
     fontSize: 16,
     fontWeight: 'bold',
-    margin:10
+    margin: 10,
   },
   detailText: {
     fontSize: 14,
     color: 'gray',
-    marginStart:10
+    marginStart: 10,
   },
   closeButton: {
     marginTop: 20,

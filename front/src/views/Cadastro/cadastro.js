@@ -15,6 +15,7 @@ export default function CadastroScreen() {
 
     const isCadastroDisabled = !email || !password || !nome;
 
+
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShowDatePicker(false);
@@ -24,6 +25,7 @@ export default function CadastroScreen() {
     const showDatepicker = () => {
         setShowDatePicker(true);
     };
+
 
     const createUser = async (nome, email, telefone, data, password) => {
         try {
