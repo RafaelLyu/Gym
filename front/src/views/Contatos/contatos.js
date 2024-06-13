@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, Text, Linking, TouchableOpacity, Platform, StyleSheet, ScrollView} from 'react-native';
-import SendIntentAndroid from 'react-native-send-intent';
 import {LinearGradient} from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {lightTheme, darkTheme} from '../../themes/themes';
@@ -25,12 +24,8 @@ const currentTheme = theme === 'light' ? lightTheme : darkTheme;
   };
 
   const discar = () => {
-    if (Platform.OS === 'android') {
-      SendIntentAndroid.sendPhoneCall(numeroContato);
-    } else {
-      const url = `tel:${numeroContato}`;
-      Linking.openURL(url);
-    }
+    const url = `tel:${numeroContato}`;
+    Linking.openURL(url);
   };
 
   return (

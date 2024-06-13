@@ -30,8 +30,6 @@ export default function PerfilScreen() {
 
         <Text style={[styles.titleText,  {color: currentTheme.text}]}> Meu Perfil</Text>
 
-        <Image source={(imagePath)} style={styles.profilePic} />
-
         <Text style={[styles.NameText, {color: currentTheme.text}]}> {userName}</Text>
 
         <Text style={[styles.matriculaText,  {color: currentTheme.text}]}> Matricula: {matricula}</Text>

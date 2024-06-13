@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import {View} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useTheme } from '../themes/themeContext'; // Modo light/dark
 import { lightTheme, darkTheme } from '../themes/themes';

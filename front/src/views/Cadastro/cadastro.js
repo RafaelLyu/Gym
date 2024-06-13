@@ -12,7 +12,7 @@ export default function CadastroScreen() {
     const [date, setDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
 
-    const isCadrastoDisabled = !email || !password || !nome ;
+    const isCadastroDisabled = !email || !password || !nome ;
 
 
     const onChange = (event, selectedDate) => {
@@ -27,7 +27,7 @@ export default function CadastroScreen() {
 
 
     const createUser = async(nome , email, data, password) => {
-        console.log("Cadrasto aqui")
+        console.log("Cadastro aqui")
         const Data1 = {
             nome , email , data , password
         }
@@ -52,8 +52,8 @@ export default function CadastroScreen() {
             </View> */}
 
             <View style={styles.introducao}>
-                <Text style={styles.Textintroducao}>Cadrastro</Text>
-                <Text style={styles.SubTextintroducao}>Sua Jornada Começa Aqui</Text>
+                <Text style={styles.Textintroducao}>Cadastro</Text>
+                <Text style={styles.SubTextintroducao}>Sua Jornada ComeÃ§a Aqui</Text>
             </View>
 
             <View style={styles.inputContainer}>
@@ -125,9 +125,9 @@ export default function CadastroScreen() {
             <View style={styles.signInButtonContainer}>
                 <Button
                     style={styles.signInButton}
-                    title='Cadrastar'
+                    title='Cadastrar'
                     onPress={handleSave}
-                    disabled={isCadrastoDisabled}
+                    disabled={isCadastroDisabled}
                 />
             </View>
 

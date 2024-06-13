@@ -31,7 +31,7 @@ export default function HomeTabs() {
         tabBarLabel: () => null,
         tabBarStyle: {
           backgroundColor: currentTheme.background,
-          borderTopWidth: 1,
+          borderTopWidth: 0.5,
           borderTopColor: currentTheme.border,
         },
       })}
