@@ -103,8 +103,7 @@ export default function ExerciciosScreen() {
     })
     .then(() => {
       setSuccessMessage('Os dados foram enviados com sucesso!');
-      setErrorMessage(''); // Limpar mensagem de erro em caso de sucesso
-      // Limpar inputs sem alterar os estados
+      setErrorMessage(''); 
       setAluno('');
       setWorkoutName('');
       setWorkoutDescription('');
@@ -145,19 +144,6 @@ export default function ExerciciosScreen() {
           value={aluno}
           onChangeText={setAluno}
         />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Selecione a Série:</Text>
-        <Picker
-          selectedValue={serie}
-          style={styles.picker}
-          onValueChange={(itemValue) => setSerie(itemValue)}
-        >
-          <Picker.Item label="Selecione a série" value="" />
-          <Picker.Item label="Série A" value="A" />
-          <Picker.Item label="Série B" value="B" />
-          <Picker.Item label="Série C" value="C" />
-        </Picker>
       </View>
       {Object.entries(exercicios).map(([categoria, listaExercicios]) => (
         <View key={categoria} style={styles.listContainer}>
