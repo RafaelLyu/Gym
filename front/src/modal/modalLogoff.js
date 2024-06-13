@@ -2,11 +2,13 @@ import React from 'react';
 import { Modal, View, Text, Button, FlatList, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useTheme } from '../themes/themeContext'; // Modo light/dark
 import { lightTheme, darkTheme } from '../themes/themes';
+import { useAuth } from '../views/Login/AuthContext'; // Use o hook useAuth aqui
 
 const ModalLofoff = ({ modalLogoff, setModalLogoff }) => {
   // Config de temas (dark ou light)
   const { theme } = useTheme();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
+
   return (
     <Modal visible={modalLogoff} animationType="fade" transparent={true} onRequestClose={() => {
       setModalLogoff(!modalLogoff);
@@ -20,6 +22,7 @@ const ModalLofoff = ({ modalLogoff, setModalLogoff }) => {
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setModalLogoff(false)}>
               <Text style={{fontSize:15, color:'red'}}>Sair</Text>
+
             </TouchableOpacity>
           </View>
         </View>
@@ -28,8 +31,6 @@ const ModalLofoff = ({ modalLogoff, setModalLogoff }) => {
   );
 };
 export default ModalLofoff
-
-
 const styles = StyleSheet.create({
   // Views
   backgroundModalContainer: {
@@ -54,6 +55,5 @@ const styles = StyleSheet.create({
   },
   
 
-  // Botões
 
 }); 

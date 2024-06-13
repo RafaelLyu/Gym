@@ -1,18 +1,58 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, FlatList, ScrollView} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, FlatList } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import Geolocation from '@react-native-community/geolocation';
-import Icon from 'react-native-vector-icons/FontAwesome6';
+import { useUser } from '../../user/user'; // Importando o contexto do usuário
+
 
 import ModalSerie from '../../modal/modalSerie';
-import ModalCalendar  from '../../modal/modalCalendar';
-
+import ModalCalendar from '../../modal/modalCalendar';
 import { useTheme } from '../../themes/themeContext'; // Importa o contexto do tema
-import { lightTheme, darkTheme } from '../../themes/themes';
 
 export default function HomeScreen() {
+  const { userId } = useUser(); // Obtendo dados do usuário do contexto
+  const { theme: currentTheme } = useTheme(); // Obtendo o tema atual e garantindo que está sendo usado corretamente
+
+  const [modalCalendar, setModalCalendar] = useState(false);  // Modal calendário
+  const [modalSerie, setModalSerie] = useState(false); // Modal de série
+  const [modalData, setModalData] = useState([]); // Dados da série
+  const [groupedWorkouts, setGroupedWorkouts] = useState({}); // Dados dos treinos agrupados por nome
+  const [isWithinTolerance, setIsWithinTolerance] = useState(false); // Estado de localização
+
+  useEffect(() => {
+    if (!userId) {
+      Alert.alert('Erro', 'ID do usuário não encontrado.');
+      return;
+    }
+
+    fetch(`http://192.168.0.12:8005/api/workoutExercises?userId=${userId}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log('Dados recebidos:', data); // Debug dos dados recebidos
+        const groupedData = groupWorkoutsByName(data);
+        setGroupedWorkouts(groupedData);
+      })
+      .catch(error => {
+        console.error(error);
+        Alert.alert('Erro', 'Houve um erro ao buscar os dados dos exercícios do treino');
+      });
+  }, [userId]);
+
+  const groupWorkoutsByName = (workouts) => {
+    return workouts.reduce((acc, workout) => {
+      if (!workout.workoutName) {
+        console.error('Workout sem nome:', workout);
+        return acc;
+      }
+      if (!acc[workout.workoutName]) {
+        acc[workout.workoutName] = [];
+      }
+      acc[workout.workoutName].push(workout);
+      return acc;
+    }, {});
+  };
 
   
-  // Config de temas (dark ou light)
   const { theme } = useTheme();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
 
@@ -24,27 +64,11 @@ export default function HomeScreen() {
   const targetLocation = { lat: -22.852672105683173, lng: -43.46786505738011 };
   const tolerance = 1000000; // Tolerância em metros
 
-  // Dados das séries
-  const series = [
-    { id: 1, name: 'Série A', exercises: [
-        { id: 1, name: 'Exercício A1', detail: 'Detalhe do Exercício A1', maquina:'teste' },  
-        { id: 2, name: 'Exercício A2', detail: 'Detalhe do Exercício A2', maquina:'teste' }] 
-    },
-    { id: 2, name: 'Série B', exercises: [
-        { id: 3, name: 'Exercício B1', detail: 'Detalhe do Exercício B1', maquina:'teste',carga:'20', repeticao:'20'}, 
-        { id: 4, name: 'Exercício B2', detail: 'Detalhe do Exercício B2', maquina:'teste', carga:'20', repeticao:'20' }] 
-    },
-    { id: 3, name: 'Série C', exercises: [
-        { id: 5, name: 'Exercício C1', detail: 'Detalhe do Exercício C1', maquina:'teste',carga:'20', repeticao:'20' }, 
-        { id: 6, name: 'Exercício C2', detail: 'Detalhe do Exercício C2', maquina:'teste',carga:'20', repeticao:'20' },
-        { id: 6, name: 'Exercício C2', detail: 'Detalhe do Exercício C2', maquina:'teste',carga:'20', repeticao:'20' },
-        { id: 6, name: 'Exercício C2', detail: 'Detalhe do Exercício C2', maquina:'teste',carga:'20', repeticao:'20' },
-        { id: 6, name: 'Exercício C2', detail: 'Detalhe do Exercício C2', maquina:'teste',carga:'20', repeticao:'20' }] 
-    },
-  ];
 
-  // Verifica a posição do usuário em relação ao alvo
   useEffect(() => {
+    const targetLocation = { lat: -23.55052, lng: -46.633308 }; // Substitua com as coordenadas de destino
+    const tolerance = 50; // Tolerância em metros
+
     const watchId = Geolocation.watchPosition(
       position => {
         const { latitude, longitude } = position.coords;
@@ -86,10 +110,10 @@ export default function HomeScreen() {
   };
 
   const handlePress = (exercises) => {
+    console.log('Exercícios selecionados:', exercises); // Debug dos exercícios selecionados
     setModalData(exercises);
     setModalSerie(true);
   };
-  //grin-wink
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={[styles.container, { backgroundColor: currentTheme.background }]}>
@@ -105,31 +129,31 @@ export default function HomeScreen() {
               <Text style={[styles.alertText, { color: currentTheme.text }]}>Marque sua presença !</Text>
               <Icon name='face-smile-wink' size={22} color='#000000' style={{marginEnd:10, backgroundColor:'yellow', borderRadius:500}}/>
             </View>
+
           </View>
-
-
         )}
       </View>
- 
-
-      <View style={styles.serieContainer}>
-        <FlatList
-          data={series}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity style={styles.touchableSerie} onPress={() => handlePress(item.exercises)}>
-              <Text style={styles.TouchableText}>{item.name}</Text>
+      
+      <FlatList
+        data={Object.entries(groupedWorkouts)}
+        keyExtractor={([workoutName]) => workoutName}
+        renderItem={({ item: [workoutName, exercises] }) => (
+          <View style={styles.workoutContainer}>
+            <TouchableOpacity 
+              style={styles.touchableSerie}
+              onPress={() => handlePress(exercises)}
+            >
+              <Text style={styles.TouchableText}>{workoutName}</Text>
             </TouchableOpacity>
-          )}
-          ItemSeparatorComponent={() => <View style={[styles.separator, {backgroundColor:currentTheme.text}]}/>}
-          contentContainerStyle={styles.flatListContent}
-          showsVerticalScrollIndicator={false} 
-        />
-      </View>
+            <View style={styles.separator} />
+          </View>
+        )}
+        contentContainerStyle={styles.flatListContent}
+      />
 
       <ModalCalendar
         modalCalendar={modalCalendar}
-        setModalCalendar = {setModalCalendar}
+        setModalCalendar={setModalCalendar}
       />
       
       <ModalSerie
@@ -138,74 +162,77 @@ export default function HomeScreen() {
         data={modalData}
       />
     </ScrollView>
-
   );
 }
-//CSS
+
 const styles = StyleSheet.create({
   //Views
   container: {
     flex: 1,
-    gap:20,
-
+    gap: 20,
   },
-  serieContainer:{
+  rowContainer: {
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    marginTop: 15,
+    marginBottom: 30,
+  },
+  calendarButtonContainer: {
+    marginHorizontal: 30,
+    marginTop: 25,
+  },
+  alertContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+    marginStart: 10,
+  },
+  serieContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom:60,
-    marginTop:20
-
+    marginBottom: 60,
+    marginTop: 20,
   },
-  separator:{
+  workoutContainer: {
+    marginBottom: 20, 
+    alignItems: 'center',
+  },
+  separator: {
     height: 1,
-    marginVertical:60,
-    backgroundColor:"black",
+    backgroundColor: 'gray',
+    marginVertical: 20,
   },
   flatListContent: {
     paddingTop: 20,
   },
-  
-  calendarButtonContainer: {
-    marginHorizontal:30, marginTop:25,
-  },
-  alertContainer:{
-    flexDirection: 'row', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    gap: 8, 
-    marginStart: 10
-  },
-  rowContainer:{
-    flexDirection: 'row-reverse', 
-    justifyContent: 'space-between', 
-    marginTop: 15, 
-    marginBottom: 30
-  },
-  //Botões
+
   touchableCalendar: {
     borderRadius: 25,
-    borderWidth:1,
-    width:40,
-    height:40,
+    borderWidth: 1,
+    width: 40,
+    height: 40,
     alignItems: 'center',
-    justifyContent:'center'
-
+    justifyContent: 'center',
   },
   touchableSerie: {
     borderRadius: 20,
     backgroundColor: '#32CD32',
-    padding: 20,
-    paddingHorizontal:60,
-
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderWidth: 1,
+    borderColor: 'black',
+    alignItems: 'center', 
+    width: "50%",
   },
-  //Textos
+
   TouchableText: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#0C0F14',//0C0F14
+    color: '#0C0F14',
+    textAlign: 'center', // Centralizar o texto
   },
-  
   alertText: {
     fontSize: 16,
     marginVertical: 15,
@@ -213,3 +240,5 @@ const styles = StyleSheet.create({
 
   },
 });
+
+

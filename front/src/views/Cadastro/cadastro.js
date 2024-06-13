@@ -1,18 +1,19 @@
 import { View, Text, TextInput, Button, StyleSheet, Image, Pressable, TouchableOpacity } from 'react-native'; // Importe Button de 'react-native'
 import React, { useState} from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faUser, faLock, faEnvelope, faCalendarDays } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faUser, faLock, faEnvelope, faCalendarDays , faMobile } from '@fortawesome/free-solid-svg-icons';
 
-import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 export default function CadastroScreen() {
     const [nome, setNome] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+    const [telefone, setTelefone] = useState('');
     const [date, setDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
 
-    const isCadastroDisabled = !email || !password || !nome ;
+    const isCadastroDisabled = !email || !password || !nome;
 
 
     const onChange = (event, selectedDate) => {
@@ -26,34 +27,35 @@ export default function CadastroScreen() {
     };
 
 
-    const createUser = async(nome , email, data, password) => {
-        console.log("Cadastro aqui")
-        const Data1 = {
-            nome , email , data , password
+    const createUser = async (nome, email, telefone, data, password) => {
+        try {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const Data1 = {
+                nome, email, telefone, data, password: hashedPassword
+            };
+            await fetch("http://192.168.0.12:8005/api/cadastro", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(Data1)
+            });
+            console.log("Cadastro realizado com sucesso");
+        } catch (error) {
+            console.error('Erro ao cadastrar usuário:', error);
         }
-        await fetch("http://192.168.0.12:8005/api/cadrasto", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(Data1)
-        });
-        } 
-
+    };
 
     const handleSave = () => {
-        createUser(nome, email, date.toISOString().split('T')[0], password);
+        createUser(nome, email, telefone, date.toISOString().split('T')[0], password);
     };
 
     return (
         <View style={styles.container}>
-            {/* <View style={styles.topImageContainer}>
-                <Image source={require("../../../assets/VectorTop.png")} style={styles.topImage} />
-            </View> */}
 
             <View style={styles.introducao}>
                 <Text style={styles.Textintroducao}>Cadastro</Text>
-                <Text style={styles.SubTextintroducao}>Sua Jornada ComeÃ§a Aqui</Text>
+                <Text style={styles.SubTextintroducao}>Sua Jornada Começa Aqui</Text>
             </View>
 
             <View style={styles.inputContainer}>
@@ -83,6 +85,21 @@ export default function CadastroScreen() {
                     placeholder='Digite seu E-mail'
                     value={email}
                     onChangeText={setEmail}
+                />
+            </View>
+
+            <View style={styles.inputContainer}>
+                <FontAwesomeIcon
+                    icon={faMobile}
+                    color="#BEBEBE"
+                    size={15}
+                    style={styles.inputIcon}
+                />
+                <TextInput
+                    style={styles.textInput}
+                    placeholder='Digite seu Telefone'
+                    value={telefone}
+                    onChangeText={setTelefone}
                 />
             </View>
 

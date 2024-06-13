@@ -7,7 +7,6 @@ import { imagePath } from '../../../assets/assets';
 
 export default function PerfilScreen() {
 
-  // Dados do usuario
   const userName = 'Davi Soares da Silva';
   const matricula = '00000000';
   var dataVencimento = '08/06/2024';
@@ -121,4 +120,5 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
+
 

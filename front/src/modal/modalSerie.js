@@ -9,6 +9,23 @@ const ModalSerie = ({ modalSerie, setModalSerie, data }) => {
   const { theme } = useTheme();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
 
+  // Função para extrair a chave de cada item
+  const keyExtractor = (item) => {
+    if (!item || !item.WorkoutExID) {
+      console.error('Item inválido:', item);
+      return 'invalid-key';
+    }
+    return item.WorkoutExID.toString();
+  };
+  const renderItem = ({ item }) => (
+    <View style={styles.itemContainer}>
+      <Text style={styles.item}>{item.exerciseName}</Text>
+      {item.TargetMuscle && <Text style={styles.detail}>{item.TargetMuscle}</Text>}
+      {item.Sets && <Text style={styles.detail}>Sets: {item.Sets}</Text>}
+    </View>
+  );
+  const description = data.length > 0 ? data[0].description : '';
+
   return (
     <Modal
       animationType="fade"
@@ -16,46 +33,78 @@ const ModalSerie = ({ modalSerie, setModalSerie, data }) => {
       visible={modalSerie}
       onRequestClose={() => setModalSerie(false)}
     >
-      <View style={[{ flex: 1 }, { backgroundColor: currentTheme.background }]}>
-        <ScrollView showsVerticalScrollIndicator={false} style={[styles.modalView, { backgroundColor: currentTheme.background }]}>
-          <Text style={styles.modalText}>EXERCÍCIOS</Text>
-          <FlatList
-            data={data}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={[styles.itemContainer, { backgroundColor: currentTheme.backgroundAlternativo }]}>
-                <Text style={[styles.itemText, { color: currentTheme.text }]}>{item.name}</Text>
-                <Text style={[styles.detailText, { color: currentTheme.text }]}>{item.detail}</Text>
-                <Text style={[styles.detailText, { color: currentTheme.text }]}>{item.maquina}</Text>
-                <Text style={[styles.cargaText, { color: currentTheme.text }]}>Carga: {item.carga}Kg</Text>
-                <Text style={[styles.cargaText, { color: currentTheme.text }]}>Repetições: {item.repeticao}</Text>
-              </View>
-            )}
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>Exercícios</Text>
+          {description && <Text style={styles.descriptionText}>{description}</Text>}
+          <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <FlatList
+              data={data}
+              keyExtractor={keyExtractor}
+              renderItem={renderItem}
+              contentContainerStyle={styles.flatListContent}
+              showsVerticalScrollIndicator={false}
+            />
+          </ScrollView>
+          <Button
+            title="Fechar"
+            onPress={() => setModalSerie(false)}
+            style={styles.closeButton}
           />
-        </ScrollView>
-
-        <TouchableOpacity onPress={() => setModalSerie(false)} style={styles.voltarTouchable}>
-          <Text style={styles.voltarText}>VOLTAR</Text>
-        </TouchableOpacity>
-
+        </View>
       </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  //Views
-  modalView: {
-    margin: 15,
-    borderRadius: 20,
+  centeredView: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    maxHeight: '80%', // Adiciona uma altura máxima para garantir que a rolagem funcione corretamente
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  descriptionText: {
+    marginBottom: 20,
+    textAlign: 'center',
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: 'gray',
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+  },
+  flatListContent: {
+    paddingBottom: 20,
   },
   itemContainer: {
-    marginBottom: 50,
-    gap: 10,
-    marginHorizontal: 15,
-    backgroundColor: '#DCDCDC',
-    borderRadius: 20,
+    marginBottom: 20,
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: '#f9f9f9',
+    width: '100%',
   },
   //Textos
   modalText: {
@@ -78,24 +127,8 @@ const styles = StyleSheet.create({
     color: 'gray',
     marginStart: 10,
   },
-  cargaText: {
-    fontSize: 14,
-    color: 'gray',
-    textAlign: 'center',
-  },
-  voltarText: {
-    fontSize: 16,
-    color: '#F0F0F0',
-  },
-  //Botão
-  voltarTouchable: {
-    backgroundColor: '#32CD32',
-    borderRadius: 10,
-    alignSelf: 'center',
-    alignItems: 'center',
-    marginBottom: 30,
-    paddingHorizontal: 35,
-    paddingVertical: 10,
+  closeButton: {
+    marginTop: 20,
   },
 });
 
