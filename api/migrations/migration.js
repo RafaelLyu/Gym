@@ -12,6 +12,7 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
     nome TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     telefone TEXT NOT NULL UNIQUE,
+    matricula TEXT NOT NULL UNIQUE,
     data TEXT NOT NULL,
     password TEXT NOT NULL,
     FOREIGN KEY (roleid) REFERENCES roles(RoleID)

@@ -1,4 +1,3 @@
-
 import React, {useState, useEffect } from 'react';
 import {View, Image, Button, Text, StyleSheet, TouchableOpacity, Modal, Switch } from 'react-native';
 import { createDrawerNavigator} from "@react-navigation/drawer";
@@ -12,8 +11,6 @@ import CadastroScreen from '../views/Cadastro/cadastro'
 
 
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import {imagePath} from '../../assets/assets';
 import {useTheme} from '../themes/themeContext'; // Modo light/dark
 import {lightTheme, darkTheme } from '../themes/themes';
 
@@ -21,11 +18,6 @@ import ModalLofoff from '../modal/modalLogoff';
 import ModalProfilePic from '../modal/modalProfilePic'; // Importar o modal de seleção de foto
 
 import defaultImage from '../../assets/foto1.png';
-
-
-// Defina uma constante para o userName (substitua com seu valor real)
-const userName = "Usuário"; // Ou importe de onde estiver definido
-
 import {useUser} from '../user/user';
 
 const Drawer = createDrawerNavigator();
@@ -40,12 +32,13 @@ const icons = {
 };
 
 function CustomDrawerContent(props) {
+  const {userNome} = useUser();
   const [modalLogoff, setModalLogoff] = useState(false); // Modal Logoff
   
   const [profilePic, setProfilePic] = useState(defaultImage); // Estado para a foto de perfil
-  const [modalVisible, setModalVisible] = useState(false); // Estado para o modal de seleção de foto
+  const [modalVisible, setModalVisible] = useState(false); 
 
-  // Config de temas (dark ou light)
+
   const { theme, toggleTheme } = useTheme();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
 
@@ -74,12 +67,11 @@ function CustomDrawerContent(props) {
           <TouchableOpacity onPress={changeProfilePic}>
             <Image source={profilePic} style={styles.profilePic} />
           </TouchableOpacity>
-          <Text style={[styles.navagationText, { color: currentTheme.text }]}>{userName}</Text>
+          <Text style={[styles.navagationText, { color: currentTheme.text }]}>{userNome}</Text>
         </View>
 
         <View style={styles.separator} />
 
-        {/* Navegação */}
         {props.state.routes.map((route, index) => (
           <View key={index} style={{ marginBottom: 60, flexDirection: 'row' }}>
             <Icon
@@ -97,7 +89,6 @@ function CustomDrawerContent(props) {
           </View>
         ))}
       </View>
-
 
       <View style={styles.settingsContainer}>
         <View style={styles.separator} />
@@ -133,6 +124,7 @@ function CustomDrawerContent(props) {
 }
 
 export default function DrawerScreens() {
+  const { userRole} = useUser();
   const { theme } = useTheme();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
   return (
@@ -161,12 +153,18 @@ export default function DrawerScreens() {
             }
           }}
         >
-        <Drawer.Screen name="Home" component={HomeTabs}  />
-        <Drawer.Screen name="Metas e Avaliação" component={AvaliacaoScreen} />
-        <Drawer.Screen name="Exercicios" component={ExerciciosScreen} />
-        <Drawer.Screen name="Contatos" component={ContatosScreen} />
-        <Drawer.Screen name="Cadastro Aluno" component={CadastroScreen}  />
-
+        {userRole == 1 ?(
+          <>
+            <Drawer.Screen name="Home" component={HomeTabs}  />
+            <Drawer.Screen name="Metas e Avaliação" component={AvaliacaoScreen} />
+            <Drawer.Screen name="Contatos" component={ContatosScreen} />
+          </>
+        ) : (
+          <>
+            <Drawer.Screen name="Exercicios" component={ExerciciosScreen} />
+            <Drawer.Screen name="Cadastro Aluno" component={CadastroScreen}  />  
+          </>
+        )}
       </Drawer.Navigator>
   );
 }
@@ -221,3 +219,4 @@ const styles = StyleSheet.create({
   }
 
 }); 
+

@@ -12,6 +12,7 @@ export const UserProvider = ({ children }) => {
   const [userToken, setUserToken] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [userMatricula, setUserMatricula] = useState(null);
   const { isLoggedIn } = useAuth(); 
 
   useEffect(() => {
@@ -25,6 +26,7 @@ export const UserProvider = ({ children }) => {
           if (userData.roleid) setUserRole(userData.roleid);
           if (userData.id) setUserId(userData.id); // Definindo userId
           if (userData.telefone) setUserTelefone(userData.telefone)
+          if (userData.matricula) setUserMatricula(userData.matricula)
         }
 
         const token = await AsyncStorage.getItem('token');
@@ -42,11 +44,12 @@ export const UserProvider = ({ children }) => {
       setUserToken(null);
       setUserRole(null);
       setUserId(null);
+      setUserMatricula(null);
     }
   }, [isLoggedIn]); // Dependência no estado de autenticação
 
   return (
-    <UserContext.Provider value={{ userId, userNome, userEmail, userTelefone ,userToken, userRole, setUserId, setUserNome, setUserEmail, setUserTelefone,setUserToken, setUserRole }}>
+    <UserContext.Provider value={{ userId, userNome, userEmail, userTelefone , userMatricula , userToken, userRole, setUserId, setUserNome, setUserEmail, setUserTelefone, setUserMatricula,setUserToken, setUserRole }}>
       {children}
     </UserContext.Provider>
   );

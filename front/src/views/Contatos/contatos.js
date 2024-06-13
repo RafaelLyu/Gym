@@ -12,8 +12,6 @@ const numeroWhatsapp = '+5521998366215'; //Contato do Zap Zap
 
 
 export default function ContatosScreen() {
-
-
   
 const {theme} = useTheme();
 const currentTheme = theme === 'light' ? lightTheme : darkTheme;

@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, FlatList, ScrollView, Button, CheckBox, Picker, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, Button, CheckBox } from 'react-native';
 
 export default function ExerciciosScreen() {
-  const { theme } = useTheme();
-  const currentTheme = theme === 'light' ? lightTheme : darkTheme;
-
   const [aluno, setAluno] = useState('');
   const [workoutName, setWorkoutName] = useState('');
   const [workoutDescription, setWorkoutDescription] = useState('');
   const [exercicios, setExercicios] = useState({});
   const [quantidades, setQuantidades] = useState({});
   const [checkedItems, setCheckedItems] = useState({});
-  const [memberId, setMemberId] = useState(null); 
-  const [errorMessage, setErrorMessage] = useState(''); 
-  const [successMessage, setSuccessMessage] = useState(''); 
+  const [memberId, setMemberId] = useState(null); // Inicialmente null
+  const [errorMessage, setErrorMessage] = useState(''); // Estado para armazenar a mensagem de erro
+  const [successMessage, setSuccessMessage] = useState(''); // Estado para armazenar a mensagem de sucesso
 
   useEffect(() => {
     fetch('http://192.168.0.12:8005/api/exercicios', {})
@@ -37,7 +34,7 @@ export default function ExerciciosScreen() {
 
   const handleAlunoChange = (text) => {
     setAluno(text);
-    if (text.length > 2) { // Buscar apenas se o nome tiver mais de 2 caracteres
+    if (text.length > 10) { 
       fetch(`http://192.168.0.12:8005/api/aluno?nome=${text}`)
         .then(response => response.json())
         .then(data => {
@@ -79,6 +76,8 @@ export default function ExerciciosScreen() {
     .then(response => response.json())
     .then(data => {
       const workoutID = data.WorkoutID; 
+
+
       const exerciciosList = Object.values(exercicios).flat();
 
       const workoutExercisesPayload = selectedExercises.map(ex => {
@@ -103,7 +102,8 @@ export default function ExerciciosScreen() {
     })
     .then(() => {
       setSuccessMessage('Os dados foram enviados com sucesso!');
-      setErrorMessage(''); 
+      setErrorMessage(''); // Limpar mensagem de erro em caso de sucesso
+      // Limpar inputs sem alterar os estados
       setAluno('');
       setWorkoutName('');
       setWorkoutDescription('');
@@ -123,9 +123,9 @@ export default function ExerciciosScreen() {
         value={!!checkedItems[item.ExerciseName]}
         onValueChange={(newValue) => handleCheckBoxChange(item.ExerciseName, newValue)}
       />
-      <Text style={styles.exerciseText}>{item}</Text>
+      <Text style={styles.exerciseText}>{item.ExerciseName}</Text>
       <TextInput
-        style={[styles.input, { borderColor: currentTheme.border, color: currentTheme.text }]}
+        style={styles.input}
         placeholder="Quantidade"
         keyboardType="numeric"
         value={quantidades[item.ExerciseName]}
@@ -135,31 +135,53 @@ export default function ExerciciosScreen() {
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Nome do Aluno:</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Digite o nome do aluno"
-          value={aluno}
-          onChangeText={setAluno}
-        />
-      </View>
-      {Object.entries(exercicios).map(([categoria, listaExercicios]) => (
-        <View key={categoria} style={styles.listContainer}>
-          <Text style={styles.partTitle}>{categoria}</Text>
-          <FlatList
-            data={listaExercicios}
-            keyExtractor={(item) => item}
-            renderItem={renderItem}
-            scrollEnabled={false} // Desabilita a rolagem individual das FlatLists
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Nome do Aluno:</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Digite o nome do aluno"
+            value={aluno}
+            onChangeText={handleAlunoChange}
           />
         </View>
-      ))}
-      <View style={styles.submitButtonContainer}>
-        <Button title="Submit" onPress={handleSubmit} />
-      </View>
-    </ScrollView>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Nome do Treino:</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Digite o nome do treino"
+            value={workoutName}
+            onChangeText={setWorkoutName}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Descrição do Treino:</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Digite a descrição do treino"
+            value={workoutDescription}
+            onChangeText={setWorkoutDescription}
+          />
+        </View>
+        <Text style={styles.sectionTitle}>Exercícios</Text>
+        <View style={styles.exercisesContainer}>
+          <ScrollView contentContainerStyle={styles.exercisesScrollView}>
+            {Object.entries(exercicios).map(([categoria, listaExercicios]) => (
+              <View key={categoria} style={styles.listContainer}>
+                <Text style={styles.partTitle}>{categoria}</Text>
+                {listaExercicios.map(renderItem)}
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+        {successMessage ? <Text style={styles.successText}>{successMessage}</Text> : null}
+        <View style={styles.submitButtonContainer}>
+          <Button title="Submit" onPress={handleSubmit} disabled={!memberId} />
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -180,15 +202,21 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderWidth: 1,
+    borderColor: '#ccc',
     borderRadius: 5,
     padding: 8,
     height: 40,
   },
-  picker: {
-    height: 40,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  exercisesContainer: {
+    height: 300, // Ajuste a altura conforme necessário
+  },
+  exercisesScrollView: {
+    paddingVertical: 10,
   },
   listContainer: {
     marginBottom: 20,
@@ -209,6 +237,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
+    borderColor: '#ccc',
     borderRadius: 5,
     padding: 8,
     marginLeft: 10,

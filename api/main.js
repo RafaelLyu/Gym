@@ -1,6 +1,5 @@
 const express = require("express");
 const sqlite = require("sqlite3").verbose();
-const bcrypt = require('bcrypt'); // Importar bcrypt
 const app = express();
 const db = new sqlite.Database('database.db');
 app.use(express.json());
@@ -29,50 +28,40 @@ function authenticateToken(req, res, next) {
     });
 }
 
+// Função para gerar matrícula numérica com até 10 dígitos
+function generateMatricula() {
+    return Math.floor(1000000000 + Math.random() * 9000000000); // Gera um número entre 1000000000 e 9999999999
+}
 
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
-    const sql = 'SELECT * FROM users WHERE email = ?';
-    db.get(sql, [email], (err, row) => {
+    const sql = 'SELECT * FROM users WHERE email = ? AND password = ?';
+    db.get(sql, [email, password], (err, row) => {
         if (err || !row) {
             res.status(401).send("Dados inválidos");
         } else {
-            bcrypt.compare(password, row.password, (err, result) => {
-                if (result) {
-                    const user = { id: row.id, nome: row.nome, email: row.email, roleid: row.roleid };
-                    const token = generateToken(user);
-                    res.json({ user: user, token: token });
-                } else {
-                    res.status(401).send("Dados inválidos");
-                }
-            });
+            const user = { id: row.id, nome: row.nome, email: row.email, roleid: row.roleid , telefone : row.telefone , matricula : row.matricula};
+            const token = generateToken(user);
+            res.json({ user: user, token: token });
         }
     });
 });
 
 app.post('/api/cadastro', (req, res) => {
-    const { nome, email, data, telefone, password } = req.body;
+    console.log(req.body);
+    const { nome, email, data, password, telefone } = req.body;
+    const matricula = generateMatricula(); // Gerar uma matrícula única
+    const stmt = db.prepare(`INSERT INTO users (nome, email, data, telefone, password, roleid, matricula) VALUES (?, ?, ?, ?, ?, ?, ?)`);
 
-    bcrypt.hash(password, 10, (err, hash) => {
+    stmt.run(nome, email, data, telefone, password, 1, matricula, function (err) {
         if (err) {
-            console.error('Erro ao criptografar senha:', err.message);
+            console.error('Erro ao inserir usuário:', err.message);
             res.status(500).send('Erro ao cadastrar usuário');
-            return;
+        } else {
+            console.log('Usuário cadastrado com sucesso');
+            res.status(200).send('Usuário cadastrado com sucesso');
         }
-
-        // Preparar a inserção de dados
-        const stmt = db.prepare(`INSERT INTO users (nome, email, data, telefone, password, roleid) VALUES (?, ?, ?, ?, ?, ?)`);
-        stmt.run(nome, email, data, telefone, hash, 2, function (err) {
-            if (err) {
-                console.error('Erro ao inserir usuário:', err.message);
-                res.status(500).send('Erro ao cadastrar usuário');
-            } else {
-                console.log('Usuário cadastrado com sucesso');
-                res.status(200).send('Usuário cadastrado com sucesso');
-            }
-            // Finaliza a declaração após a execução
-            stmt.finalize();
-        });
+        stmt.finalize();
     });
 });
 
@@ -120,21 +109,20 @@ app.post('/api/workoutExercises', (req, res) => {
         }
     });
 });
+
 app.get('/api/aluno', (req, res) => {
     const { nome } = req.query;
     const sql = 'SELECT id FROM users WHERE nome = ?';
     db.get(sql, [nome], (err, row) => {
-      if (err || !row) {
-        res.status(404).send("Aluno não encontrado");
-      } else {
-        res.json({ id: row.id });
-      }
+        if (err || !row) {
+            res.status(404).send("Aluno não encontrado");
+        } else {
+            res.json({ id: row.id });
+        }
     });
-  });
+});
 
-
- 
-  app.get('/api/workoutExercises', (req, res) => {
+app.get('/api/workoutExercises', (req, res) => {
     const userId = req.query.userId; // Pegando o ID do usuário a partir dos parâmetros da URL
     const sql = `
         SELECT we.WorkoutExID, w.name as workoutName, w.description, e.ExerciseName as exerciseName, e.TargetMuscle, we.Sets
@@ -152,7 +140,5 @@ app.get('/api/aluno', (req, res) => {
         }
     });
 });
-  
-
 
 app.listen(8005, () => console.log("Servidor Ligou na porta 8005"));

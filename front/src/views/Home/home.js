@@ -12,12 +12,11 @@ import { useTheme } from '../../themes/themeContext'; // Importa o contexto do t
 export default function HomeScreen() {
   const { userId } = useUser(); // Obtendo dados do usuário do contexto
   const { theme: currentTheme } = useTheme(); // Obtendo o tema atual e garantindo que está sendo usado corretamente
-
   const [modalCalendar, setModalCalendar] = useState(false);  // Modal calendário
   const [modalSerie, setModalSerie] = useState(false); // Modal de série
   const [modalData, setModalData] = useState([]); // Dados da série
   const [groupedWorkouts, setGroupedWorkouts] = useState({}); // Dados dos treinos agrupados por nome
-  const [isWithinTolerance, setIsWithinTolerance] = useState(false); // Estado de localização
+  const [isWithinTolerance, setIsWithinTolerance] = useState(false); // Estado 
 
   useEffect(() => {
     if (!userId) {
@@ -52,15 +51,6 @@ export default function HomeScreen() {
     }, {});
   };
 
-  
-  const { theme } = useTheme();
-  const currentTheme = theme === 'light' ? lightTheme : darkTheme;
-
-  const [modalCalendar, setModalCalendar] = useState(false);  // Modal calendario
-  const [modalSerie, setModalSerie] = useState(false); //Modal de serie
-  const [modalData, setModalData] = useState([]); //Dados da serie
-
-  const [isWithinTolerance, setIsWithinTolerance] = useState(false);
   const targetLocation = { lat: -22.852672105683173, lng: -43.46786505738011 };
   const tolerance = 1000000; // Tolerância em metros
 
@@ -119,7 +109,7 @@ export default function HomeScreen() {
     <ScrollView showsVerticalScrollIndicator={false} style={[styles.container, { backgroundColor: currentTheme.background }]}>
       <View style={styles.rowContainer}>
         <View style={styles.calendarButtonContainer}>
-          <Icon name='calendar-days' size={25} color={currentTheme.icon} onPress={() => setModalCalendar(true)} />
+          <Icon name='calendar' size={25} color={currentTheme.icon} onPress={() => setModalCalendar(true)} />
         </View>
         {isWithinTolerance && (
           <View style={[{marginStart: 16, borderRadius:10,}, {backgroundColor:currentTheme.backgroundAlternativo}]}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet, ScrollView } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet, ScrollView  , Button} from 'react-native';
 
 import { useTheme } from '../themes/themeContext'; // Modo light/dark
 import { lightTheme, darkTheme } from '../themes/themes';

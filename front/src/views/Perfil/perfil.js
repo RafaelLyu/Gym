@@ -1,19 +1,17 @@
 import React from 'react';
-import { View, Image, Text, StyleSheet, ScrollView} from 'react-native';
+import { View, Text, StyleSheet, ScrollView} from 'react-native';
 import { useTheme } from '../../themes/themeContext'; // Modo light/dark
 import { lightTheme, darkTheme } from '../../themes/themes';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import { imagePath } from '../../../assets/assets';
+import { useUser } from '../../user/user';
 
 export default function PerfilScreen() {
+  const { userMatricula , userNome, userEmail , userTelefone  } = useUser()
 
-  const userName = 'Davi Soares da Silva';
-  const matricula = '00000000';
   var dataVencimento = '08/06/2024';
   var dataInscricao = '08/06/2024';
   var status = 'Ativo';
-  var userNumber = '(21) 9999-8888';
-  var userEmail = 'testeteste@gmail.com';
+
 
   // Config de temas (dark ou light)
   const { theme } = useTheme();
@@ -29,9 +27,9 @@ export default function PerfilScreen() {
 
         <Text style={[styles.titleText,  {color: currentTheme.text}]}> Meu Perfil</Text>
 
-        <Text style={[styles.NameText, {color: currentTheme.text}]}> {userName}</Text>
+        <Text style={[styles.NameText, {color: currentTheme.text}]}> {userNome}</Text>
 
-        <Text style={[styles.matriculaText,  {color: currentTheme.text}]}> Matricula: {matricula}</Text>
+        <Text style={[styles.matriculaText,  {color: currentTheme.text}]}> Matricula: {userMatricula}</Text>
 
       </View>
 
@@ -44,7 +42,7 @@ export default function PerfilScreen() {
         <Text style={[styles.infoText, { color: currentTheme.text }]}>Data de Vencimento - {dataVencimento}</Text>
 
         <View style={styles.rowContainer}>
-          <Text style={[styles.infoText, { color: currentTheme.text }]}>Contato: {userNumber} </Text>
+          <Text style={[styles.infoText, { color: currentTheme.text }]}>Contato: {userTelefone} </Text>
           <Icon name='pen-to-square' size={20} color={currentTheme.text} />
         </View>
 
