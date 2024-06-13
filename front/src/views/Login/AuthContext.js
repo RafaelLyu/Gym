@@ -24,14 +24,14 @@ export const AuthProvider = ({ children }) => {
 
       const resposta = await res.json();
 
-      if (!res.ok &&  resposta.token == null) {
-        throw new Error("Erro na requisição") 
-      };
+      if (!res.ok || !resposta.token) {
+        throw new Error("Erro na requisição");
+      }
       setIsLoggedIn(true);
 
       try {
-        const token = resposta.token
-        await AsyncStorage.setItem("token" , token);
+        const token = resposta.token;
+        await AsyncStorage.setItem("token", token);
         await AsyncStorage.setItem("userData", JSON.stringify(resposta.user));
         const storedUserData = await AsyncStorage.getItem("userData");
         console.log(JSON.parse(storedUserData));
@@ -42,13 +42,14 @@ export const AuthProvider = ({ children }) => {
      
     } catch (err) {
       console.log('Erro ao fazer login:', err);
+      throw err; // Lançar erro para ser capturado na tela de login
     }
   };
 
   const logout = async () => {
     setIsLoggedIn(false);
-    await AsyncStorage.removeItem("userData")
-    await AsyncStorage.removeItem("token")
+    await AsyncStorage.removeItem("userData");
+    await AsyncStorage.removeItem("token");
   };
 
   return (
@@ -56,7 +57,7 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
 // hook para consumir o contexto de autenticação
 export const useAuth = () => useContext(AuthContext);

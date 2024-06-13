@@ -4,7 +4,7 @@ import { useTheme } from '../../themes/themeContext'; // Modo light/dark
 import { lightTheme, darkTheme } from '../../themes/themes';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { imagePath } from '../../../assets/assets';
-import { useUser } from '../../user/user'; // Certifique-se de que o caminho está correto
+import { useUser } from '../../user/user'; 
 
 export default function PerfilScreen() {
   const { userNome, userEmail, userToken, userRole } = useUser();

@@ -42,8 +42,8 @@ function CustomDrawerContent(props) {
   };
 
   return (
-    <View style={[styles.drawerContainer, { backgroundColor: currentTheme.background }]}> {/* Drawer */}
-      {/* Opções de tela */}
+    <View style={[styles.drawerContainer, { backgroundColor: currentTheme.background }]}> 
+
       <View style={styles.navagationContainer}>
         <View style={styles.rowContainer}>
           <Image
@@ -67,13 +67,13 @@ function CustomDrawerContent(props) {
         ))}
       </View>
 
-      {/* Conteudo do Drawer */}
+
       <View style={styles.settingsContainer}>
         <View style={styles.separator} />
 
         <View style={styles.rowContainer}>
           <Text style={[styles.settingsText, { color: currentTheme.text }]}>Modo escuro</Text>
-          {/* Switch de tema */}
+
           <Switch
             trackColor={{ false: '#777', true: '#8bf' }}
             thumbColor={theme === 'light' ? '#fff' : '#7CFC00'}
@@ -91,7 +91,7 @@ function CustomDrawerContent(props) {
         </View>
       </View>
 
-      {/* Modal de logoff */}
+
       <Modal visible={modalLogoff} animationType="fade" transparent={true}>
         <View style={styles.backgroundModalContainer}>
           <View style={{ backgroundColor: 'white', padding: 30, borderRadius: 10 }}>
@@ -108,6 +108,7 @@ function CustomDrawerContent(props) {
 }
 
 export default function DrawerScreens() {
+  const { userRole } = useUser();
   return (
     <ThemeProvider>
       <Drawer.Navigator
@@ -123,11 +124,18 @@ export default function DrawerScreens() {
           headerTintColor: '#228B22',
         }}
       >
-        <Drawer.Screen name="Home" component={HomeTabs} />
-        <Drawer.Screen name="Metas e Avaliação" component={AvaliacaoScreen} />
-        <Drawer.Screen name="Exercicios" component={ExerciciosScreen} />
-        <Drawer.Screen name="Contatos" component={ContatosScreen} />
-        <Drawer.Screen name="Cadastro Aluno" component={CadastroScreen} />
+  {userRole === 1 ? (
+          <>
+            <Drawer.Screen name="Home" component={HomeTabs} />
+            <Drawer.Screen name="Metas e Avaliação" component={AvaliacaoScreen} />
+            <Drawer.Screen name="Contatos" component={ContatosScreen} />
+          </>
+        ) : (
+          <>
+            <Drawer.Screen name="Exercicios" component={ExerciciosScreen} />
+            <Drawer.Screen name="Cadastro Aluno" component={CadastroScreen} />
+          </>
+        )}
       </Drawer.Navigator>
     </ThemeProvider>
   );

@@ -5,6 +5,7 @@ const db = new sqlite.Database('database.db');
 app.use(express.json());
 const cors = require("cors");
 app.use(cors({origin:"*"}))
+const { insertExercises } = require('./exercises');
 
 db.run(`INSERT INTO roles (RoleName) VALUES ("Aluno")
 `, (err) => {
@@ -22,3 +23,12 @@ db.run(`INSERT INTO roles (RoleName) VALUES ("Professor")
         console.log('Insert dado com sucesso in roles');
     }
 });
+
+insertExercises()
+  .then(() => {
+    console.log("Inserção de exercícios concluída com sucesso.");
+  })
+  .catch((err) => {
+    console.error("Erro ao inserir exercícios:", err.message);
+  });
+

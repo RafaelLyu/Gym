@@ -2,47 +2,80 @@ import React from 'react';
 import { Modal, View, Text, Button, FlatList, StyleSheet, ScrollView } from 'react-native';
 
 const ModalSerie = ({ modalSerie, setModalSerie, data }) => {
+  // Função para extrair a chave de cada item
+  const keyExtractor = (item) => {
+    if (!item || !item.WorkoutExID) {
+      console.error('Item inválido:', item);
+      return 'invalid-key';
+    }
+    return item.WorkoutExID.toString();
+  };
+
+  // Renderização de cada item na lista
+  const renderItem = ({ item }) => (
+    <View style={styles.itemContainer}>
+      <Text style={styles.item}>{item.exerciseName}</Text>
+      {item.TargetMuscle && <Text style={styles.detail}>{item.TargetMuscle}</Text>}
+      {item.Sets && <Text style={styles.detail}>Sets: {item.Sets}</Text>}
+    </View>
+  );
+
+  // Pegar a descrição do primeiro item, assumindo que todos têm a mesma descrição
+  const description = data.length > 0 ? data[0].description : '';
+
   return (
     <Modal
       animationType="fade"
       transparent={true}
       visible={modalSerie}
       onRequestClose={() => setModalSerie(false)}
-    >   <View style={{flex:1}}>
-        <ScrollView showsVerticalScrollIndicator={false} style={styles.modalView}>
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
           <Text style={styles.modalText}>Exercícios</Text>
-          <FlatList
-            data={data}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.itemContainer}>
-                <Text style={styles.item}>{item.name}</Text>
-                <Text style={styles.detail}>{item.detail}</Text>
-                <Text style={styles.detail}>{item.maquina}</Text>
-                <Text style={styles.carga}>Carga: {item.carga}Kg</Text>
-                <Text style={styles.carga}>Repetições: {item.repeticao}</Text>
-
-
-              </View>
-            )}
-          />
+          {description && <Text style={styles.descriptionText}>{description}</Text>}
+          <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <FlatList
+              data={data}
+              keyExtractor={keyExtractor}
+              renderItem={renderItem}
+              contentContainerStyle={styles.flatListContent}
+              showsVerticalScrollIndicator={false}
+            />
           </ScrollView>
           <Button
-            title="Close"
+            title="Fechar"
             onPress={() => setModalSerie(false)}
+            style={styles.closeButton}
           />
         </View>
+      </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
   modalView: {
-    margin: 10,
+    margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
-    flex:1,
-    
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    maxHeight: '80%', // Adiciona uma altura máxima para garantir que a rolagem funcione corretamente
   },
   modalText: {
     marginBottom: 15,
@@ -50,10 +83,25 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  descriptionText: {
+    marginBottom: 20,
+    textAlign: 'center',
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: 'gray',
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+  },
+  flatListContent: {
+    paddingBottom: 20,
+  },
   itemContainer: {
-    marginBottom: 50,
-    gap:10,
-    marginStart:15
+    marginBottom: 20,
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: '#f9f9f9',
+    width: '100%',
   },
   item: {
     fontSize: 16,
@@ -63,11 +111,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'gray',
   },
-  carga:{
-    fontSize:14,
-    color:'gray',
-    textAlign:'center'
-  }
+  closeButton: {
+    marginTop: 20,
+  },
 });
 
 export default ModalSerie;

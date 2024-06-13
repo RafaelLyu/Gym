@@ -11,6 +11,7 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
     roleid INTEGER ,
     nome TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
+    telefone TEXT NOT NULL UNIQUE,
     data TEXT NOT NULL,
     password TEXT NOT NULL,
     FOREIGN KEY (roleid) REFERENCES roles(RoleID)
@@ -35,10 +36,7 @@ db.run(`CREATE TABLE IF NOT EXISTS roles (
 db.run(`CREATE TABLE IF NOT EXISTS exercises (
     ExerciseID INTEGER PRIMARY KEY AUTOINCREMENT,
     ExerciseName TEXT NOT NULL,
-    Description TEXT,
-    TargetMuscle TEXT,
-    EquipmentRequired TEXT
-
+    TargetMuscle TEXT
 )`, (err) => {
     if (err) {
         console.error('Erro ao criar tabela exercises :', err.message);
@@ -47,35 +45,39 @@ db.run(`CREATE TABLE IF NOT EXISTS exercises (
     }
 });
 
-db.run(`CREATE TABLE IF NOT EXISTS WorkoutExercises   (
-    EntryID INTEGER PRIMARY KEY AUTOINCREMENT,
-    WorkoutID INTEGER,
+
+db.run(`CREATE TABLE IF NOT EXISTS workoutExercises   (
+    WorkoutExID INTEGER PRIMARY KEY AUTOINCREMENT,
     ExerciseID INTEGER,
-    Sets INTEGER NOT NULL,
-    Reps INTEGER NOT NULL,
-    Weight DECIMAL(5, 2),
-    FOREIGN KEY (WorkoutID) REFERENCES MemberWorkouts(WorkoutID),
-    FOREIGN KEY (ExerciseID) REFERENCES Exercises(ExerciseID)
-)`, (err) => {
-    if (err) {
-        console.error('Erro ao criar tabela WorkoutExercises :', err.message);
-    } else {
-        console.log('Tabela criada com sucesso WorkoutExercises');
-    }
-});
-db.run(`CREATE TABLE IF NOT EXISTS memberWorkouts  (
-    WorkoutID INTEGER PRIMARY KEY AUTOINCREMENT,
     MemberID INTEGER,
-    TrainerID INTEGER,
-    WorkoutName TEXT NOT NULL,
-    Date DATE NOT NULL,
-    FOREIGN KEY (MemberID) REFERENCES Users(UserID),
-    FOREIGN KEY (TrainerID) REFERENCES Users(UserID)
+    workoutID INTEGER,
+    Sets INTEGER NOT NULL,
+    FOREIGN KEY (ExerciseID) REFERENCES Exercises(ExerciseID)
+    FOREIGN KEY (MemberID) REFERENCES users(id)
+    FOREIGN KEY (workoutID) REFERENCES workouts(WorkoutID)
+
+
+
 )`, (err) => {
     if (err) {
-        console.error('Erro ao criar tabela memberWorkouts :', err.message);
+        console.error('Erro ao criar tabela workoutExercises :', err.message);
     } else {
-        console.log('Tabela criada com sucesso memberWorkouts ');
+        console.log('Tabela criada com sucesso workoutExercises');
     }
 });
+
+
+db.run(`CREATE TABLE IF NOT EXISTS workouts  (
+    WorkoutID INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT ,
+    description TEXT
+)`, (err) => {
+    if (err) {
+        console.error('Erro ao criar tabela workouts :', err.message);
+    } else {
+        console.log('Tabela criada com sucesso workouts ');
+    }
+});
+
+
 

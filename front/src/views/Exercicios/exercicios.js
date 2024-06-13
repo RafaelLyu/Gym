@@ -1,92 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, FlatList, ScrollView, Button, CheckBox, Picker, Alert } from 'react-native';
-
-const exerciciosPorSerie = {
-  "A": {
-    "Parte Superior do Corpo": [
-      "Supino reto", "Supino inclinado", "Supino declinado", "Crucifixo", "Fly", "Flexão de braço", "Pullover", "Cross-over",
-      "Barra fixa", "Remada com barra", "Remada unilateral com halteres", "Puxada alta", "Puxada frontal", "Puxada na polia baixa", "Remada cavalinho", "Remada sentada",
-      "Desenvolvimento com barra", "Desenvolvimento com halteres", "Elevação lateral", "Elevação frontal", "Elevação posterior", "Remada alta", "Desenvolvimento Arnold", "Elevação lateral inclinada",
-      "Rosca direta", "Rosca alternada com halteres", "Rosca martelo", "Rosca 21", "Tríceps pulley", "Tríceps testa", "Tríceps coice", "Extensão de tríceps na polia alta", "Flexão de braços diamante", "Rosca inversa", "Flexão de punho", "Extensão de punho"
-    ],
-  
-    "Parte Inferior do Corpo": [
-      "Agachamento livre", "Agachamento na máquina", "Afundo", "Cadeira extensora", "Cadeira flexora", "Levantamento terra", "Passada",
-      "Elevação pélvica", "Abdutora", "Adução de quadril", "Agachamento sumô", "Stiff",
-      "Panturrilha sentado", "Panturrilha em pé", "Gêmeos na máquina", "Elevação de panturrilha unilateral"
-    ],
-  
-    "Abdominais": [
-      "Crunch abdominal", "Prancha frontal", "Prancha lateral", "Elevação de pernas", "Russian twist", "Prancha com rotação de tronco", "Abdominal remador", "Prancha dinâmica", "Tesoura"
-    ],
-  
-    "Aeróbicos": [
-      "Corrida", "Ciclismo", "Caminhada", "Elíptico", "Pular corda", "Subir escadas"
-    ]
-  
-  },
-  "B": {
-    "Parte Superior do Corpo": [
-      "Supino reto", "Supino inclinado", "Supino declinado", "Crucifixo", "Fly", "Flexão de braço", "Pullover", "Cross-over",
-      "Barra fixa", "Remada com barra", "Remada unilateral com halteres", "Puxada alta", "Puxada frontal", "Puxada na polia baixa", "Remada cavalinho", "Remada sentada",
-      "Desenvolvimento com barra", "Desenvolvimento com halteres", "Elevação lateral", "Elevação frontal", "Elevação posterior", "Remada alta", "Desenvolvimento Arnold", "Elevação lateral inclinada",
-      "Rosca direta", "Rosca alternada com halteres", "Rosca martelo", "Rosca 21", "Tríceps pulley", "Tríceps testa", "Tríceps coice", "Extensão de tríceps na polia alta", "Flexão de braços diamante", "Rosca inversa", "Flexão de punho", "Extensão de punho"
-    ],
-  
-    "Parte Inferior do Corpo": [
-      "Agachamento livre", "Agachamento na máquina", "Afundo", "Cadeira extensora", "Cadeira flexora", "Levantamento terra", "Passada",
-      "Elevação pélvica", "Abdutora", "Adução de quadril", "Agachamento sumô", "Stiff",
-      "Panturrilha sentado", "Panturrilha em pé", "Gêmeos na máquina", "Elevação de panturrilha unilateral"
-    ],
-  
-    "Abdominais": [
-      "Crunch abdominal", "Prancha frontal", "Prancha lateral", "Elevação de pernas", "Russian twist", "Prancha com rotação de tronco", "Abdominal remador", "Prancha dinâmica", "Tesoura"
-    ],
-  
-    "Aeróbicos": [
-      "Corrida", "Ciclismo", "Caminhada", "Elíptico", "Pular corda", "Subir escadas"
-    ]
-  
-  },
-  "C":{
-    "Parte Superior do Corpo": [
-      "Supino reto", "Supino inclinado", "Supino declinado", "Crucifixo", "Fly", "Flexão de braço", "Pullover", "Cross-over",
-      "Barra fixa", "Remada com barra", "Remada unilateral com halteres", "Puxada alta", "Puxada frontal", "Puxada na polia baixa", "Remada cavalinho", "Remada sentada",
-      "Desenvolvimento com barra", "Desenvolvimento com halteres", "Elevação lateral", "Elevação frontal", "Elevação posterior", "Remada alta", "Desenvolvimento Arnold", "Elevação lateral inclinada",
-      "Rosca direta", "Rosca alternada com halteres", "Rosca martelo", "Rosca 21", "Tríceps pulley", "Tríceps testa", "Tríceps coice", "Extensão de tríceps na polia alta", "Flexão de braços diamante", "Rosca inversa", "Flexão de punho", "Extensão de punho"
-    ],
-  
-    "Parte Inferior do Corpo": [
-      "Agachamento livre", "Agachamento na máquina", "Afundo", "Cadeira extensora", "Cadeira flexora", "Levantamento terra", "Passada",
-      "Elevação pélvica", "Abdutora", "Adução de quadril", "Agachamento sumô", "Stiff",
-      "Panturrilha sentado", "Panturrilha em pé", "Gêmeos na máquina", "Elevação de panturrilha unilateral"
-    ],
-  
-    "Abdominais": [
-      "Crunch abdominal", "Prancha frontal", "Prancha lateral", "Elevação de pernas", "Russian twist", "Prancha com rotação de tronco", "Abdominal remador", "Prancha dinâmica", "Tesoura"
-    ],
-  
-    "Aeróbicos": [
-      "Corrida", "Ciclismo", "Caminhada", "Elíptico", "Pular corda", "Subir escadas"
-    ]
-  
-  },
-};
+import { View, Text, TextInput, StyleSheet, ScrollView, Button, CheckBox } from 'react-native';
 
 export default function ExerciciosScreen() {
   const [aluno, setAluno] = useState('');
-  const [serie, setSerie] = useState('');
+  const [workoutName, setWorkoutName] = useState('');
+  const [workoutDescription, setWorkoutDescription] = useState('');
   const [exercicios, setExercicios] = useState({});
   const [quantidades, setQuantidades] = useState({});
   const [checkedItems, setCheckedItems] = useState({});
+  const [memberId, setMemberId] = useState(null); // Inicialmente null
+  const [errorMessage, setErrorMessage] = useState(''); // Estado para armazenar a mensagem de erro
+  const [successMessage, setSuccessMessage] = useState(''); // Estado para armazenar a mensagem de sucesso
 
   useEffect(() => {
-    if (serie) {
-      setExercicios(exerciciosPorSerie[serie]);
-    } else {
-      setExercicios({});
-    }
-  }, [serie]);
+    fetch('http://192.168.0.12:8005/api/exercicios', {})
+      .then(response => response.json())
+      .then(data => {
+        setExercicios(data);
+      })
+      .catch(error => {
+        console.error(error);
+        setErrorMessage('Houve um erro ao buscar os dados dos exercícios');
+      });
+  }, []);
 
   const handleInputChange = (exercicio, quantidade) => {
     setQuantidades({ ...quantidades, [exercicio]: quantidade });
@@ -94,6 +30,27 @@ export default function ExerciciosScreen() {
 
   const handleCheckBoxChange = (exercicio, isChecked) => {
     setCheckedItems({ ...checkedItems, [exercicio]: isChecked });
+  };
+
+  const handleAlunoChange = (text) => {
+    setAluno(text);
+    if (text.length > 2) { // Buscar apenas se o nome tiver mais de 2 caracteres
+      fetch(`http://192.168.0.12:8005/api/aluno?nome=${text}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.id) {
+            setMemberId(data.id);
+          } else {
+            setMemberId(null);
+          }
+        })
+        .catch(error => {
+          console.error(error);
+          setErrorMessage('Houve um erro ao buscar o ID do aluno');
+        });
+    } else {
+      setMemberId(null);
+    }
   };
 
   const handleSubmit = () => {
@@ -104,92 +61,133 @@ export default function ExerciciosScreen() {
         quantidade: quantidades[exercicio] || '0'
       }));
 
-    const payload = {
-      aluno,
-      serie,
-      selectedExercises
+    const workoutPayload = {
+      name: workoutName,
+      description: workoutDescription,
     };
 
-    fetch('https://sua-api.com/exercicios', {
+    fetch('http://192.168.0.12:8005/api/workouts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(workoutPayload),
     })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        Alert.alert('Sucesso', 'Dados enviados com sucesso');
-      })
-      .catch(error => {
-        console.error(error);
-        Alert.alert('Erro', 'Houve um erro ao enviar os dados');
+    .then(response => response.json())
+    .then(data => {
+      const workoutID = data.WorkoutID; 
+      const exerciciosList = Object.values(exercicios).flat();
+
+      const workoutExercisesPayload = selectedExercises.map(ex => {
+        const exercise = exerciciosList.find(e => e.ExerciseName === ex.exercicio);
+        return {
+          ExerciseID: exercise.ExerciseID,
+          MemberID: memberId,
+          workoutID: workoutID,
+          Sets: parseInt(ex.quantidade, 10),
+        };
       });
+
+      return Promise.all(workoutExercisesPayload.map(payload =>
+        fetch('http://192.168.0.12:8005/api/workoutExercises', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        })
+      ));
+    })
+    .then(() => {
+      setSuccessMessage('Os dados foram enviados com sucesso!');
+      setErrorMessage(''); // Limpar mensagem de erro em caso de sucesso
+      // Limpar inputs sem alterar os estados
+      setAluno('');
+      setWorkoutName('');
+      setWorkoutDescription('');
+      setQuantidades({});
+      setCheckedItems({});
+      setMemberId(null);
+    })
+    .catch(error => {
+      console.error(error);
+      setErrorMessage('Houve um erro ao enviar os dados');
+    });
   };
 
-  const renderItem = ({ item }) => (
-    <View style={styles.exerciseRow}>
+  const renderItem = (item) => (
+    <View style={styles.exerciseRow} key={item.ExerciseID}>
       <CheckBox
-        value={!!checkedItems[item]}
-        onValueChange={(newValue) => handleCheckBoxChange(item, newValue)}
+        value={!!checkedItems[item.ExerciseName]}
+        onValueChange={(newValue) => handleCheckBoxChange(item.ExerciseName, newValue)}
       />
-      <Text style={styles.exerciseText}>{item}</Text>
+      <Text style={styles.exerciseText}>{item.ExerciseName}</Text>
       <TextInput
         style={styles.input}
         placeholder="Quantidade"
-        keyboardType="string"
-        value={quantidades[item]}
-        onChangeText={text => handleInputChange(item, text)}
+        keyboardType="numeric"
+        value={quantidades[item.ExerciseName]}
+        onChangeText={text => handleInputChange(item.ExerciseName, text)}
       />
     </View>
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Nome do Aluno:</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Digite o nome do aluno"
-          value={aluno}
-          onChangeText={setAluno}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Selecione a Série:</Text>
-        <Picker
-          selectedValue={serie}
-          style={styles.picker}
-          onValueChange={(itemValue) => setSerie(itemValue)}
-        >
-          <Picker.Item label="Selecione a série" value="" />
-          <Picker.Item label="Série A" value="A" />
-          <Picker.Item label="Série B" value="B" />
-          <Picker.Item label="Série C" value="C" />
-        </Picker>
-      </View>
-      {Object.entries(exercicios).map(([categoria, listaExercicios]) => (
-        <View key={categoria} style={styles.listContainer}>
-          <Text style={styles.partTitle}>{categoria}</Text>
-          <FlatList
-            data={listaExercicios}
-            keyExtractor={(item) => item}
-            renderItem={renderItem}
-            scrollEnabled={false} // Desabilita a rolagem individual das FlatLists
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Nome do Aluno:</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Digite o nome do aluno"
+            value={aluno}
+            onChangeText={handleAlunoChange}
           />
         </View>
-      ))}
-      <View style={styles.submitButtonContainer}>
-        <Button title="Submit" onPress={handleSubmit} />
-      </View>
-    </ScrollView>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Nome do Treino:</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Digite o nome do treino"
+            value={workoutName}
+            onChangeText={setWorkoutName}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Descrição do Treino:</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Digite a descrição do treino"
+            value={workoutDescription}
+            onChangeText={setWorkoutDescription}
+          />
+        </View>
+        <Text style={styles.sectionTitle}>Exercícios</Text>
+        <View style={styles.exercisesContainer}>
+          <ScrollView contentContainerStyle={styles.exercisesScrollView}>
+            {Object.entries(exercicios).map(([categoria, listaExercicios]) => (
+              <View key={categoria} style={styles.listContainer}>
+                <Text style={styles.partTitle}>{categoria}</Text>
+                {listaExercicios.map(renderItem)}
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+        {successMessage ? <Text style={styles.successText}>{successMessage}</Text> : null}
+        <View style={styles.submitButtonContainer}>
+          <Button title="Submit" onPress={handleSubmit} disabled={!memberId} />
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   scrollViewContainer: {
-    flexGrow: 1,
     paddingVertical: 20,
     paddingHorizontal: 10,
   },
@@ -207,11 +205,16 @@ const styles = StyleSheet.create({
     padding: 8,
     height: 40,
   },
-  picker: {
-    height: 40,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  exercisesContainer: {
+    height: 300, // Ajuste a altura conforme necessário
+  },
+  exercisesScrollView: {
+    paddingVertical: 10,
   },
   listContainer: {
     marginBottom: 20,
@@ -242,5 +245,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 40,
     alignItems: 'center',
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  successText: {
+    color: 'green',
+    textAlign: 'center',
+    marginVertical: 10,
   },
 });

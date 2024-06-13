@@ -15,13 +15,15 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-native-fontawesome": "^0.3.0",
-    "@react-native-async-storage/async-storage": "^1.23.1",
+    "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/datetimepicker": "8.0.1",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/drawer": "^6.6.15",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "events": "^3.3.0",
     "expo": "^51.0.9",
     "expo-linear-gradient": "^13.0.2",
@@ -44,8 +46,7 @@
     "react-native-svg": "15.2.0",
     "react-native-web": "~0.19.10",
     "react-navigation": "^5.0.0",
-    "sqlite": "^5.1.1",
-    "@react-native-async-storage/async-storage": "1.23.1"
+    "sqlite": "^5.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0"
