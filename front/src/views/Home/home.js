@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     color: '#0C0F14',
-    textAlign: 'center', // Centralizar o texto
+    textAlign: 'center', 
   },
   alertText: {
     fontSize: 16,

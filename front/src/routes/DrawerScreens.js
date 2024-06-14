@@ -1,43 +1,42 @@
-import React, {useState, useEffect } from 'react';
-import {View, Image, Button, Text, StyleSheet, TouchableOpacity, Modal, Switch } from 'react-native';
-import { createDrawerNavigator} from "@react-navigation/drawer";
+import React, { useState, useEffect } from 'react';
+import { View, Image, Text, StyleSheet, TouchableOpacity, Modal, Switch } from 'react-native';
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import HomeTabs from './HomeTabs';
 import AvaliacaoScreen from '../views/Avaliacao/avaliacao';
 import ExerciciosScreen from '../views/Exercicios/exercicios';
 import ContatosScreen from '../views/Contatos/contatos';
-import CadastroScreen from '../views/Cadastro/cadastro'
-
+import CadastroScreen from '../views/Cadastro/cadastro';
+import AlunosScreen from '../views/Alunos/aluno';
 
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import {useTheme} from '../themes/themeContext'; // Modo light/dark
-import {lightTheme, darkTheme } from '../themes/themes';
+import { useTheme } from '../themes/themeContext'; // Modo light/dark
+import { lightTheme, darkTheme } from '../themes/themes';
 
 import ModalLofoff from '../modal/modalLogoff';
 import ModalProfilePic from '../modal/modalProfilePic'; // Importar o modal de seleção de foto
 
 import defaultImage from '../../assets/foto1.png';
-import {useUser} from '../user/user';
+import { useUser } from '../user/user';
 
 const Drawer = createDrawerNavigator();
-
 
 const icons = {
   Home: 'house',
   'Metas e Avaliação': 'medal',
   Exercicios: 'dumbbell',
   Contatos: 'phone',
-  'Cadastro Aluno': 'pen-to-square'
+  'Cadastro Aluno': 'pen-to-square',
+  Alunos: 'user-graduate'
 };
 
 function CustomDrawerContent(props) {
-  const {userNome} = useUser();
+  const { userNome } = useUser();
   const [modalLogoff, setModalLogoff] = useState(false); // Modal Logoff
   
   const [profilePic, setProfilePic] = useState(defaultImage); // Estado para a foto de perfil
   const [modalVisible, setModalVisible] = useState(false); 
-
 
   const { theme, toggleTheme } = useTheme();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
@@ -63,7 +62,7 @@ function CustomDrawerContent(props) {
   return (
     <View style={[styles.drawerContainer, { backgroundColor: currentTheme.background }]}>
       <View style={styles.navagationContainer}>
-      <View style={styles.rowContainer}>
+        <View style={styles.rowContainer}>
           <TouchableOpacity onPress={changeProfilePic}>
             <Image source={profilePic} style={styles.profilePic} />
           </TouchableOpacity>
@@ -117,55 +116,55 @@ function CustomDrawerContent(props) {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         setProfilePic={setProfilePic}
-
       />
     </View>
   );
 }
 
 export default function DrawerScreens() {
-  const { userRole} = useUser();
+  const { userRole } = useUser();
   const { theme } = useTheme();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
   return (
-      <Drawer.Navigator 
-        drawerContent={props => <CustomDrawerContent {...props} />} 
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: currentTheme.background, 
-              borderBottomColor: currentTheme.border,
-              borderWidth:0.5
-            },
-            headerTitle: () => (
-              <Image
-                source={require('../../assets/logo.webp')} // Substitua pelo caminho correto da sua logo
-                style={styles.logo}
-              />
-            ),
-            headerTitleAlign: 'center',
-            headerTintColor: currentTheme.text,
-            headerTitleStyle:{
-              backgroundColor:'#228B22',
-              fontSize:10,
-              borderRadius:50,
-              padding:8,
-              color:'white',
-            }
-          }}
-        >
-        {userRole == 1 ?(
-          <>
-            <Drawer.Screen name="Home" component={HomeTabs}  />
-            <Drawer.Screen name="Metas e Avaliação" component={AvaliacaoScreen} />
-            <Drawer.Screen name="Contatos" component={ContatosScreen} />
-          </>
-        ) : (
-          <>
-            <Drawer.Screen name="Exercicios" component={ExerciciosScreen} />
-            <Drawer.Screen name="Cadastro Aluno" component={CadastroScreen}  />  
-          </>
-        )}
-      </Drawer.Navigator>
+    <Drawer.Navigator 
+      drawerContent={props => <CustomDrawerContent {...props} />} 
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: currentTheme.background, 
+          borderBottomColor: currentTheme.border,
+          borderWidth: 0.5
+        },
+        headerTitle: () => (
+          <Image
+            source={require('../../assets/logo.webp')} // Substitua pelo caminho correto da sua logo
+            style={styles.logo}
+          />
+        ),
+        headerTitleAlign: 'center',
+        headerTintColor: currentTheme.text,
+        headerTitleStyle: {
+          backgroundColor: '#228B22',
+          fontSize: 10,
+          borderRadius: 50,
+          padding: 8,
+          color: 'white',
+        }
+      }}
+    >
+      {userRole == 1 ? (
+        <>
+          <Drawer.Screen name="Home" component={HomeTabs} />
+          <Drawer.Screen name="Metas e Avaliação" component={AvaliacaoScreen} />
+          <Drawer.Screen name="Contatos" component={ContatosScreen} />
+        </>
+      ) : (
+        <>
+          <Drawer.Screen name="Exercicios" component={ExerciciosScreen} />
+          <Drawer.Screen name="Cadastro Aluno" component={CadastroScreen} />
+          <Drawer.Screen name="Alunos" component={AlunosScreen} />
+        </>
+      )}
+    </Drawer.Navigator>
   );
 }
 
@@ -181,8 +180,8 @@ const styles = StyleSheet.create({
     marginTop: 30,
     gap: 10
   },
-  settingsContainer:{
-    gap:20
+  settingsContainer: {
+    gap: 20
   },
   rowContainer: {
     flexDirection: 'row',
@@ -205,7 +204,6 @@ const styles = StyleSheet.create({
     width: '100%', 
     backgroundColor: '#373737',
     marginVertical: 20, 
-    
   },
   profilePic: {
     width: 50,
@@ -213,10 +211,8 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   // Botões
-  logo:{
-    width:100,
-    height:100
+  logo: {
+    width: 100,
+    height: 100
   }
-
 }); 
-

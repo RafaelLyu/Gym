@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet, ScrollView  , Button} from 'react-native';
+import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet, ScrollView} from 'react-native';
 
 import { useTheme } from '../themes/themeContext'; // Modo light/dark
 import { lightTheme, darkTheme } from '../themes/themes';
@@ -18,10 +18,10 @@ const ModalSerie = ({ modalSerie, setModalSerie, data }) => {
     return item.WorkoutExID.toString();
   };
   const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-      <Text style={styles.item}>{item.exerciseName}</Text>
-      {item.TargetMuscle && <Text style={styles.detail}>{item.TargetMuscle}</Text>}
-      {item.Sets && <Text style={styles.detail}>Sets: {item.Sets}</Text>}
+    <View style={[styles.itemContainer, { backgroundColor: currentTheme.backgroundAlternativo }]}>
+    <Text style={[styles.itemText, {color:currentTheme.text}]}>{item.exerciseName}</Text>
+      {item.TargetMuscle && <Text style={[styles.detailText, {color:currentTheme.text}]}>{item.TargetMuscle}</Text>}
+      {item.Sets && <Text style={[styles.detailText, {color:currentTheme.text, marginBottom:15}]}>Repetições: {item.Sets}</Text>}
     </View>
   );
   const description = data.length > 0 ? data[0].description : '';
@@ -33,11 +33,10 @@ const ModalSerie = ({ modalSerie, setModalSerie, data }) => {
       visible={modalSerie}
       onRequestClose={() => setModalSerie(false)}
     >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>Exercícios</Text>
-          {description && <Text style={styles.descriptionText}>{description}</Text>}
-          <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <View style={[{ flex: 1 }, { backgroundColor: currentTheme.background }]}>
+        <ScrollView showsVerticalScrollIndicator={false} style={[styles.modalView, { backgroundColor: currentTheme.background }]}>          
+        <Text style={styles.modalText}>Exercícios</Text>
+          {description && <Text style={[styles.descriptionText, {color:currentTheme.text}]}>{description}</Text>}
             <FlatList
               data={data}
               keyExtractor={keyExtractor}
@@ -46,65 +45,30 @@ const ModalSerie = ({ modalSerie, setModalSerie, data }) => {
               showsVerticalScrollIndicator={false}
             />
           </ScrollView>
-          <Button
-            title="Fechar"
-            onPress={() => setModalSerie(false)}
-            style={styles.closeButton}
-          />
+
+          <TouchableOpacity style={styles.voltarTouchable} onPress={() => setModalSerie(false)}>
+            <Text style={styles.voltarText}>Fechar</Text>
+          </TouchableOpacity>
         </View>
-      </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
   modalView: {
-    margin: 20,
-    backgroundColor: 'white',
+    margin: 15,
     borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    maxHeight: '80%', // Adiciona uma altura máxima para garantir que a rolagem funcione corretamente
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  descriptionText: {
-    marginBottom: 20,
-    textAlign: 'center',
-    fontSize: 16,
-    fontStyle: 'italic',
-    color: 'gray',
-  },
-  scrollViewContent: {
-    flexGrow: 1,
+    flex: 1,
   },
   flatListContent: {
     paddingBottom: 20,
   },
   itemContainer: {
-    marginBottom: 20,
-    padding: 15,
-    borderRadius: 10,
-    backgroundColor: '#f9f9f9',
-    width: '100%',
+    marginBottom: 50,
+    gap: 10,
+    marginHorizontal: 15,
+    backgroundColor: '#DCDCDC',
+    borderRadius: 20,
   },
   //Textos
   modalText: {
@@ -115,7 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#32CD32',
     borderRadius: 20,
     color: '#F0F0F0',
-    padding: 15,
+    paddingVertical: 10,
   },
   itemText: {
     fontSize: 16,
@@ -127,9 +91,25 @@ const styles = StyleSheet.create({
     color: 'gray',
     marginStart: 10,
   },
-  closeButton: {
-    marginTop: 20,
+  descriptionText: {
+    marginBottom: 20,
+    textAlign: 'center',
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: 'gray',
   },
+  voltarText: {
+    fontSize: 16,
+    color: '#F0F0F0',
+  },
+  voltarTouchable: {
+    backgroundColor: '#32CD32',
+    borderRadius: 10,
+    alignSelf: 'center',
+    alignItems: 'center',
+    marginBottom: 30,
+    paddingHorizontal: 35,
+    paddingVertical: 10,  },
 });
 
 export default ModalSerie;

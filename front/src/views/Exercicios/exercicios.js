@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, Button} from 'react-native';
-import CheckBox from 'expo-checkbox';
+import { View, Text, TextInput, StyleSheet, ScrollView, Button, CheckBox} from 'react-native';
 
 export default function ExerciciosScreen() {
   const [aluno, setAluno] = useState('');
@@ -35,7 +34,7 @@ export default function ExerciciosScreen() {
 
   const handleAlunoChange = (text) => {
     setAluno(text);
-    if (text.length > 10) { 
+    if (text.length > 2) { // Buscar apenas se o nome tiver mais de 2 caracteres
       fetch(`http://192.168.0.12:8005/api/aluno?nome=${text}`)
         .then(response => response.json())
         .then(data => {
@@ -47,6 +46,7 @@ export default function ExerciciosScreen() {
         })
         .catch(error => {
           console.error(error);
+          setErrorMessage('Houve um erro ao buscar o ID do aluno');
         });
     } else {
       setMemberId(null);
@@ -102,6 +102,7 @@ export default function ExerciciosScreen() {
     })
     .then(() => {
       setSuccessMessage('Os dados foram enviados com sucesso!');
+      // Limpar os inputs após o envio
       setAluno('');
       setWorkoutName('');
       setWorkoutDescription('');
@@ -133,7 +134,10 @@ export default function ExerciciosScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollViewContainer}>
+        <Text style={[styles.sectionTitle,]}>Criar Série</Text>
+        <View style={styles.separator}/>
+
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Nome do Aluno:</Text>
           <TextInput
@@ -174,10 +178,11 @@ export default function ExerciciosScreen() {
         </View>
         {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
         {successMessage ? <Text style={styles.successText}>{successMessage}</Text> : null}
-        <View style={styles.submitButtonContainer}>
-          <Button title="Submit" onPress={handleSubmit} disabled={!memberId} />
-        </View>
+        
       </ScrollView>
+      <View style={styles.submitButtonContainer}>
+        <Button title="Salvar" color='#32CD32' onPress={handleSubmit} disabled={!memberId} />
+      </View>
     </View>
   );
 }
@@ -185,10 +190,14 @@ export default function ExerciciosScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:'#F0F0F0'
   },
   scrollViewContainer: {
     paddingVertical: 20,
     paddingHorizontal: 10,
+    gap:10,
+    backgroundColor:'#F0F0F0'
+
   },
   inputContainer: {
     marginBottom: 20,
@@ -200,7 +209,7 @@ const styles = StyleSheet.create({
   textInput: {
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 15,
     padding: 8,
     height: 40,
   },
@@ -208,25 +217,34 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    textAlign:'center',
+    marginVertical:10,
+    
   },
   exercisesContainer: {
-    height: 300, // Ajuste a altura conforme necessário
+    height: 300, 
   },
   exercisesScrollView: {
     paddingVertical: 10,
+    backgroundColor:'#DCDCDC',
+    borderRadius:10
+
   },
   listContainer: {
     marginBottom: 20,
+    marginStart:5
   },
   partTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    marginStart:5
   },
   exerciseRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    marginStart:5
   },
   exerciseText: {
     flex: 1,
@@ -254,5 +272,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 40,
     alignItems: 'center',
+  },
+  separator: {
+    height: 1,
+    width: '90%', 
+    marginBottom: 25,
+    backgroundColor:'#373737',
+    alignSelf:'center'
   },
 });

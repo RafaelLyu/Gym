@@ -1,8 +1,7 @@
-import { View, Text, TextInput, Button, StyleSheet} from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, CheckBox } from 'react-native';
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUser, faLock, faEnvelope, faCalendarDays, faMobile } from '@fortawesome/free-solid-svg-icons';
-
 
 export default function CadastroScreen() {
     const [nome, setNome] = useState('');
@@ -11,11 +10,14 @@ export default function CadastroScreen() {
     const [telefone, setTelefone] = useState('');
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [feedbackMessage, setFeedbackMessage] = useState('');
+    const [isProfessor, setIsProfessor] = useState(false);
+
     const isCadastroDisabled = !email || !password || !nome;
-    const createUser = async (nome, email, telefone, data, password) => {
+
+    const createUser = async (nome, email, telefone, data, password, roleid) => {
         try {
             const Data1 = {
-                nome, email, telefone, data, password
+                nome, email, telefone, data, password, roleid
             };
             await fetch("http://192.168.0.12:8005/api/cadastro", {
                 method: "POST",
@@ -37,10 +39,12 @@ export default function CadastroScreen() {
         setEmail('');
         setTelefone('');
         setDate(new Date().toISOString().split('T')[0]);
+        setIsProfessor(false);
     };
 
     const handleSave = () => {
-        createUser(nome, email, telefone, date, password);
+        const roleid = isProfessor ? 2 : 1;
+        createUser(nome, email, telefone, date, password, roleid);
     };
 
     return (
@@ -126,6 +130,14 @@ export default function CadastroScreen() {
                 />
             </View>
 
+            <View style={styles.inputContainer}>
+                <CheckBox
+                    value={isProfessor}
+                    onValueChange={setIsProfessor}
+                />
+                <Text style={styles.checkboxLabel}>Cadastrar como professor</Text>
+            </View>
+
             {feedbackMessage ? <Text style={styles.feedbackText}>{feedbackMessage}</Text> : null}
 
             <View style={styles.signInButtonContainer}>
@@ -146,14 +158,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFFFFF',
         position: 'relative',
-    },
-    topImageContainer: {
-        width: "100%",
-        height: 180,
-    },
-    topImage: {
-        width: "100%",
-        height: "100%",
     },
     introducao: {
         marginBottom: 40,
@@ -195,6 +199,13 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 5,
         color: "#BEBEBE",
+    },
+    checkboxLabel: {
+        flex: 1,
+        color: "#BEBEBE",
+        paddingLeft: 10,
+        alignContent:'center',
+        width: "100%"
     },
     feedbackText: {
         textAlign: 'center',
