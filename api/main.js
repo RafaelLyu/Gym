@@ -1,5 +1,6 @@
 const express = require("express");
 const sqlite = require("sqlite3").verbose();
+const bcrypt = require("bcrypt");
 const app = express();
 const db = new sqlite.Database('database.db');
 app.use(express.json());
@@ -28,32 +29,38 @@ function authenticateToken(req, res, next) {
     });
 }
 
-// Função para gerar matrícula numérica com até 10 dígitos
+
 function generateMatricula() {
     return Math.floor(1000000000 + Math.random() * 9000000000); // Gera um número entre 1000000000 e 9999999999
 }
 
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
-    const sql = 'SELECT * FROM users WHERE email = ? AND password = ?';
-    db.get(sql, [email, password], (err, row) => {
+    const sql = 'SELECT * FROM users WHERE email = ?';
+    db.get(sql, [email], async (err, row) => {
         if (err || !row) {
             res.status(401).send("Dados inválidos");
         } else {
-            const user = { id: row.id, nome: row.nome, email: row.email, roleid: row.roleid , telefone : row.telefone , matricula : row.matricula};
-            const token = generateToken(user);
-            res.json({ user: user, token: token });
+            const match = await bcrypt.compare(password, row.password);
+            if (!match) {
+                res.status(401).send("Dados inválidos");
+            } else {
+                const user = { id: row.id, nome: row.nome, email: row.email, roleid: row.roleid, telefone: row.telefone, matricula: row.matricula };
+                const token = generateToken(user);
+                res.json({ user: user, token: token });
+            }
         }
     });
 });
 
-app.post('/api/cadastro', (req, res) => {
-    console.log(req.body);
+
+app.post('/api/cadastro', async (req, res) => {
     const { nome, email, data, password, telefone } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
     const matricula = generateMatricula(); // Gerar uma matrícula única
     const stmt = db.prepare(`INSERT INTO users (nome, email, data, telefone, password, roleid, matricula) VALUES (?, ?, ?, ?, ?, ?, ?)`);
 
-    stmt.run(nome, email, data, telefone, password, 1, matricula, function (err) {
+    stmt.run(nome, email, data, telefone, hashedPassword, 2, matricula, function (err) {
         if (err) {
             console.error('Erro ao inserir usuário:', err.message);
             res.status(500).send('Erro ao cadastrar usuário');
@@ -64,6 +71,7 @@ app.post('/api/cadastro', (req, res) => {
         stmt.finalize();
     });
 });
+
 
 // Rota para obter exercícios
 app.get('/api/exercicios', (req, res) => {
