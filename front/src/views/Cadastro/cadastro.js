@@ -1,8 +1,7 @@
-import { View, Text, TextInput, Button, StyleSheet, Image, Pressable, TouchableOpacity } from 'react-native'; // Importe Button de 'react-native'
-import React, { useState} from 'react';
+import { View, Text, TextInput, Button, StyleSheet} from 'react-native';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faUser, faLock, faEnvelope, faCalendarDays , faMobile } from '@fortawesome/free-solid-svg-icons';
-
+import { faUser, faLock, faEnvelope, faCalendarDays, faMobile } from '@fortawesome/free-solid-svg-icons';
 
 
 export default function CadastroScreen() {
@@ -10,28 +9,13 @@ export default function CadastroScreen() {
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
     const [telefone, setTelefone] = useState('');
-    const [date, setDate] = useState(new Date());
-    const [showDatePicker, setShowDatePicker] = useState(false);
-
+    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    const [feedbackMessage, setFeedbackMessage] = useState('');
     const isCadastroDisabled = !email || !password || !nome;
-
-
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShowDatePicker(false);
-        setDate(currentDate);
-    };
-
-    const showDatepicker = () => {
-        setShowDatePicker(true);
-    };
-
-
     const createUser = async (nome, email, telefone, data, password) => {
         try {
-            const hashedPassword = await bcrypt.hash(password, 10);
             const Data1 = {
-                nome, email, telefone, data, password: hashedPassword
+                nome, email, telefone, data, password
             };
             await fetch("http://192.168.0.12:8005/api/cadastro", {
                 method: "POST",
@@ -40,19 +24,27 @@ export default function CadastroScreen() {
                 },
                 body: JSON.stringify(Data1)
             });
-            console.log("Cadastro realizado com sucesso");
+            setFeedbackMessage("Cadastro realizado com sucesso!");
+            resetInputs();
         } catch (error) {
-            console.error('Erro ao cadastrar usuário:', error);
+            setFeedbackMessage("Erro ao cadastrar usuário.");
         }
     };
 
+    const resetInputs = () => {
+        setNome('');
+        setPassword('');
+        setEmail('');
+        setTelefone('');
+        setDate(new Date().toISOString().split('T')[0]);
+    };
+
     const handleSave = () => {
-        createUser(nome, email, telefone, date.toISOString().split('T')[0], password);
+        createUser(nome, email, telefone, date, password);
     };
 
     return (
         <View style={styles.container}>
-
             <View style={styles.introducao}>
                 <Text style={styles.Textintroducao}>Cadastro</Text>
                 <Text style={styles.SubTextintroducao}>Sua Jornada Começa Aqui</Text>
@@ -110,18 +102,13 @@ export default function CadastroScreen() {
                     size={15}
                     style={styles.inputIcon}
                 />
-                <TouchableOpacity onPress={showDatepicker} style={styles.textInput}>
-                    <Text style={styles.dateText}>{date.toLocaleDateString()}</Text>
-                </TouchableOpacity>
-            </View>
-            {showDatePicker && (
-                <DateTimePicker
+                <TextInput
+                    style={styles.textInput}
+                    type="date"
                     value={date}
-                    mode="date"
-                    display="spinner"
-                    onChange={onChange}
+                    onChangeText={setDate}
                 />
-            )}
+            </View>
 
             <View style={styles.inputContainer}>
                 <FontAwesomeIcon
@@ -139,15 +126,17 @@ export default function CadastroScreen() {
                 />
             </View>
 
+            {feedbackMessage ? <Text style={styles.feedbackText}>{feedbackMessage}</Text> : null}
+
             <View style={styles.signInButtonContainer}>
                 <Button
                     style={styles.signInButton}
                     title='Cadastrar'
                     onPress={handleSave}
                     disabled={isCadastroDisabled}
+                    color='#32cd32'
                 />
             </View>
-
         </View>
     );
 }
@@ -180,7 +169,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: "400",
         letterSpacing: 1.5,
-        color: "#447da9",
+        color: "##32cd32",
     },
     inputContainer: {
         backgroundColor: '#F8F8FF',
@@ -206,6 +195,11 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 5,
         color: "#BEBEBE",
+    },
+    feedbackText: {
+        textAlign: 'center',
+        marginVertical: 10,
+        color: 'green',
     },
     signInButtonContainer: {
         justifyContent: 'center',

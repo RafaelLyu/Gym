@@ -2,21 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Geolocation from '@react-native-community/geolocation';
-import { useUser } from '../../user/user'; // Importando o contexto do usuário
+import { useUser } from '../../user/user'; 
 
 
 import ModalSerie from '../../modal/modalSerie';
 import ModalCalendar from '../../modal/modalCalendar';
-import { useTheme } from '../../themes/themeContext'; // Importa o contexto do tema
+import { useTheme } from '../../themes/themeContext'; 
 
 export default function HomeScreen() {
-  const { userId } = useUser(); // Obtendo dados do usuário do contexto
-  const { theme: currentTheme } = useTheme(); // Obtendo o tema atual e garantindo que está sendo usado corretamente
-  const [modalCalendar, setModalCalendar] = useState(false);  // Modal calendário
-  const [modalSerie, setModalSerie] = useState(false); // Modal de série
-  const [modalData, setModalData] = useState([]); // Dados da série
-  const [groupedWorkouts, setGroupedWorkouts] = useState({}); // Dados dos treinos agrupados por nome
-  const [isWithinTolerance, setIsWithinTolerance] = useState(false); // Estado 
+  const { userId } = useUser(); 
+  const { theme: currentTheme } = useTheme(); 
+  const [modalCalendar, setModalCalendar] = useState(false); 
+  const [modalSerie, setModalSerie] = useState(false); 
+  const [modalData, setModalData] = useState([]); 
+  const [groupedWorkouts, setGroupedWorkouts] = useState({}); 
+  const [isWithinTolerance, setIsWithinTolerance] = useState(false); 
 
   useEffect(() => {
     if (!userId) {
@@ -50,9 +50,6 @@ export default function HomeScreen() {
       return acc;
     }, {});
   };
-
-  const targetLocation = { lat: -22.852672105683173, lng: -43.46786505738011 };
-  const tolerance = 1000000; // Tolerância em metros
 
 
   useEffect(() => {
@@ -156,7 +153,7 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  //Views
+
   container: {
     flex: 1,
     gap: 20,

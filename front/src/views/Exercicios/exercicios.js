@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, Button, CheckBox } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, Button} from 'react-native';
+import CheckBox from 'expo-checkbox';
 
 export default function ExerciciosScreen() {
   const [aluno, setAluno] = useState('');
@@ -9,8 +10,8 @@ export default function ExerciciosScreen() {
   const [quantidades, setQuantidades] = useState({});
   const [checkedItems, setCheckedItems] = useState({});
   const [memberId, setMemberId] = useState(null); // Inicialmente null
-  const [errorMessage, setErrorMessage] = useState(''); // Estado para armazenar a mensagem de erro
-  const [successMessage, setSuccessMessage] = useState(''); // Estado para armazenar a mensagem de sucesso
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     fetch('http://192.168.0.12:8005/api/exercicios', {})
@@ -46,7 +47,6 @@ export default function ExerciciosScreen() {
         })
         .catch(error => {
           console.error(error);
-          setErrorMessage('Houve um erro ao buscar o ID do aluno');
         });
     } else {
       setMemberId(null);
@@ -75,9 +75,9 @@ export default function ExerciciosScreen() {
     })
     .then(response => response.json())
     .then(data => {
-      const workoutID = data.WorkoutID; 
+      const workoutID = data.WorkoutID; // Assumindo que o servidor retorna o ID do novo treino
 
-
+      // Converter exercicios para uma lista simples
       const exerciciosList = Object.values(exercicios).flat();
 
       const workoutExercisesPayload = selectedExercises.map(ex => {
@@ -102,14 +102,11 @@ export default function ExerciciosScreen() {
     })
     .then(() => {
       setSuccessMessage('Os dados foram enviados com sucesso!');
-      setErrorMessage(''); // Limpar mensagem de erro em caso de sucesso
-      // Limpar inputs sem alterar os estados
       setAluno('');
       setWorkoutName('');
       setWorkoutDescription('');
-      setQuantidades({});
       setCheckedItems({});
-      setMemberId(null);
+      setQuantidades({});
     })
     .catch(error => {
       console.error(error);
@@ -128,7 +125,7 @@ export default function ExerciciosScreen() {
         style={styles.input}
         placeholder="Quantidade"
         keyboardType="numeric"
-        value={quantidades[item.ExerciseName]}
+        value={quantidades[item.ExerciseName] || ''} // Adicionar valor inicial vazio
         onChangeText={text => handleInputChange(item.ExerciseName, text)}
       />
     </View>
@@ -243,11 +240,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     width: 100,
   },
-  submitButtonContainer: {
-    marginTop: 20,
-    marginBottom: 40,
-    alignItems: 'center',
-  },
   errorText: {
     color: 'red',
     textAlign: 'center',
@@ -257,5 +249,10 @@ const styles = StyleSheet.create({
     color: 'green',
     textAlign: 'center',
     marginVertical: 10,
+  },
+  submitButtonContainer: {
+    marginTop: 20,
+    marginBottom: 40,
+    alignItems: 'center',
   },
 });
