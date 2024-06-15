@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     }
     try {
       const data = { email, password };
-      const res = await fetch("http://192.168.0.12:8005/api/login", {
+      const res = await fetch("http://10.12.156.139:8005/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -24,14 +24,12 @@ export const AuthProvider = ({ children }) => {
 
       const resposta = await res.json();
 
-      if (!res.ok || !resposta.token) {
+      if (!res.ok) {
         throw new Error("Erro na requisição");
       }
       setIsLoggedIn(true);
 
       try {
-        const token = resposta.token;
-        await AsyncStorage.setItem("token", token);
         await AsyncStorage.setItem("userData", JSON.stringify(resposta.user));
         const storedUserData = await AsyncStorage.getItem("userData");
         console.log(JSON.parse(storedUserData));
@@ -42,14 +40,13 @@ export const AuthProvider = ({ children }) => {
      
     } catch (err) {
       console.log('Erro ao fazer login:', err);
-      throw err; // Lançar erro para ser capturado na tela de login
+      throw err; 
     }
   };
 
   const logout = async () => {
     setIsLoggedIn(false);
     await AsyncStorage.removeItem("userData");
-    await AsyncStorage.removeItem("token");
   };
 
   return (

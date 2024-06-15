@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, Button, CheckBox } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, Button, CheckBox, Alert } from 'react-native';
 
 export default function ExerciciosScreen() {
   const [aluno, setAluno] = useState('');
@@ -9,11 +9,11 @@ export default function ExerciciosScreen() {
   const [quantidades, setQuantidades] = useState({});
   const [checkedItems, setCheckedItems] = useState({});
   const [memberId, setMemberId] = useState(null); // Inicialmente null
-  const [errorMessage, setErrorMessage] = useState(''); // Estado para armazenar a mensagem de erro
-  const [successMessage, setSuccessMessage] = useState(''); // Estado para armazenar a mensagem de sucesso
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
-    fetch('http://192.168.0.12:8005/api/exercicios', {})
+    fetch('http://10.12.156.139:8005/api/exercicios', {})
       .then(response => response.json())
       .then(data => {
         setExercicios(data);
@@ -34,8 +34,8 @@ export default function ExerciciosScreen() {
 
   const handleAlunoChange = (text) => {
     setAluno(text);
-    if (text.length > 10) { 
-      fetch(`http://192.168.0.12:8005/api/aluno?nome=${text}`)
+    if (text.length > 2) { // Buscar apenas se o nome tiver mais de 2 caracteres
+      fetch(`http://10.12.156.139:8005/api/aluno?nome=${text}`)
         .then(response => response.json())
         .then(data => {
           if (data && data.id) {
@@ -66,7 +66,7 @@ export default function ExerciciosScreen() {
       description: workoutDescription,
     };
 
-    fetch('http://192.168.0.12:8005/api/workouts', {
+    fetch('http://10.12.156.139:8005/api/workouts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -75,9 +75,9 @@ export default function ExerciciosScreen() {
     })
     .then(response => response.json())
     .then(data => {
-      const workoutID = data.WorkoutID; 
+      const workoutID = data.WorkoutID; // Assumindo que o servidor retorna o ID do novo treino
 
-
+      // Converter exercicios para uma lista simples
       const exerciciosList = Object.values(exercicios).flat();
 
       const workoutExercisesPayload = selectedExercises.map(ex => {
@@ -91,7 +91,7 @@ export default function ExerciciosScreen() {
       });
 
       return Promise.all(workoutExercisesPayload.map(payload =>
-        fetch('http://192.168.0.12:8005/api/workoutExercises', {
+        fetch('http://10.12.156.139:8005/api/workoutExercises', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -102,14 +102,12 @@ export default function ExerciciosScreen() {
     })
     .then(() => {
       setSuccessMessage('Os dados foram enviados com sucesso!');
-      setErrorMessage(''); // Limpar mensagem de erro em caso de sucesso
-      // Limpar inputs sem alterar os estados
+      // Limpar os inputs após o envio
       setAluno('');
       setWorkoutName('');
       setWorkoutDescription('');
-      setQuantidades({});
       setCheckedItems({});
-      setMemberId(null);
+      setQuantidades({});
     })
     .catch(error => {
       console.error(error);
@@ -117,8 +115,8 @@ export default function ExerciciosScreen() {
     });
   };
 
-  const renderItem = (item) => (
-    <View style={styles.exerciseRow} key={item.ExerciseID}>
+  const renderItem = (item, index) => (
+    <View style={[styles.exerciseRow, { backgroundColor: index % 2 === 0 ? '#e0e0e0' : '#ffffff' }]} key={item.ExerciseID}>
       <CheckBox
         value={!!checkedItems[item.ExerciseName]}
         onValueChange={(newValue) => handleCheckBoxChange(item.ExerciseName, newValue)}
@@ -128,7 +126,7 @@ export default function ExerciciosScreen() {
         style={styles.input}
         placeholder="Quantidade"
         keyboardType="numeric"
-        value={quantidades[item.ExerciseName]}
+        value={quantidades[item.ExerciseName] || ''} 
         onChangeText={text => handleInputChange(item.ExerciseName, text)}
       />
     </View>
@@ -170,7 +168,7 @@ export default function ExerciciosScreen() {
             {Object.entries(exercicios).map(([categoria, listaExercicios]) => (
               <View key={categoria} style={styles.listContainer}>
                 <Text style={styles.partTitle}>{categoria}</Text>
-                {listaExercicios.map(renderItem)}
+                {listaExercicios.map((item, index) => renderItem(item, index))}
               </View>
             ))}
           </ScrollView>
@@ -213,7 +211,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   exercisesContainer: {
-    height: 300, // Ajuste a altura conforme necessário
+    height: 300, 
   },
   exercisesScrollView: {
     paddingVertical: 10,
@@ -230,6 +228,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
   },
   exerciseText: {
     flex: 1,
@@ -243,11 +243,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     width: 100,
   },
-  submitButtonContainer: {
-    marginTop: 20,
-    marginBottom: 40,
-    alignItems: 'center',
-  },
   errorText: {
     color: 'red',
     textAlign: 'center',
@@ -257,5 +252,10 @@ const styles = StyleSheet.create({
     color: 'green',
     textAlign: 'center',
     marginVertical: 10,
+  },
+  submitButtonContainer: {
+    marginTop: 20,
+    marginBottom: 40,
+    alignItems: 'center',
   },
 });

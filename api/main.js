@@ -1,5 +1,6 @@
 const express = require("express");
 const sqlite = require("sqlite3").verbose();
+const bcrypt = require("bcrypt");
 const app = express();
 const db = new sqlite.Database('database.db');
 app.use(express.json());
@@ -7,53 +8,36 @@ app.use(express.json());
 const cors = require("cors");
 app.use(cors({ origin: "*" }));
 
-const jwt = require('jsonwebtoken');
-const SECRET_KEY = 'Gym'; // Substitua por uma chave segura
 
-// Função para gerar um token
-function generateToken(user) {
-    return jwt.sign(user, SECRET_KEY, { expiresIn: '1h' });
-}
-
-// Middleware para verificar o token
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Extrai o token do cabeçalho
-    if (!token) return res.sendStatus(403);
-
-    jwt.verify(token, SECRET_KEY, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
-}
-
-// Função para gerar matrícula numérica com até 10 dígitos
 function generateMatricula() {
-    return Math.floor(1000000000 + Math.random() * 9000000000); // Gera um número entre 1000000000 e 9999999999
+    return Math.floor(1000000000 + Math.random() * 9000000000); 
 }
-
 app.post('/api/login', (req, res) => {
     const { email, password } = req.body;
-    const sql = 'SELECT * FROM users WHERE email = ? AND password = ?';
-    db.get(sql, [email, password], (err, row) => {
+    const sql = 'SELECT * FROM users WHERE email = ?';
+    db.get(sql, [email], async (err, row) => {
         if (err || !row) {
             res.status(401).send("Dados inválidos");
         } else {
-            const user = { id: row.id, nome: row.nome, email: row.email, roleid: row.roleid , telefone : row.telefone , matricula : row.matricula};
-            const token = generateToken(user);
-            res.json({ user: user, token: token });
+            const match = await bcrypt.compare(password, row.password);
+            if (!match) {
+                res.status(401).send("Dados inválidos");
+            } else {
+                const user = { id: row.id, nome: row.nome, email: row.email, roleid: row.roleid, telefone: row.telefone, matricula: row.matricula };
+                res.json({ user: user});
+            }
         }
     });
 });
 
-app.post('/api/cadastro', (req, res) => {
-    console.log(req.body);
-    const { nome, email, data, password, telefone } = req.body;
-    const matricula = generateMatricula(); // Gerar uma matrícula única
+
+app.post('/api/cadastro', async (req, res) => {
+    const { nome, email, data, password, telefone, roleid } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const matricula = generateMatricula(); 
     const stmt = db.prepare(`INSERT INTO users (nome, email, data, telefone, password, roleid, matricula) VALUES (?, ?, ?, ?, ?, ?, ?)`);
 
-    stmt.run(nome, email, data, telefone, password, 1, matricula, function (err) {
+    stmt.run(nome, email, data, telefone, hashedPassword, roleid, matricula, function (err) {
         if (err) {
             console.error('Erro ao inserir usuário:', err.message);
             res.status(500).send('Erro ao cadastrar usuário');
@@ -140,5 +124,32 @@ app.get('/api/workoutExercises', (req, res) => {
         }
     });
 });
+
+app.get('/api/alunos', (req, res) => {
+    const sql = 'SELECT nome, matricula, id FROM users WHERE roleid = 1';
+    db.all(sql, [], (err, rows) => {
+        if (err) {
+            res.status(500).send("Erro ao buscar alunos: " + err.message);
+        } else {
+            res.json(rows);
+        }
+    });
+});
+
+app.delete('/api/alunos/:id', (req, res) => {
+    const id = req.params.id;
+    const sql = 'DELETE FROM users WHERE id = ?';
+
+    db.run(sql, id, function(err) {
+        if (err) {
+            console.error('Erro ao deletar aluno:', err.message);
+            res.status(500).json({ error: 'Erro ao deletar aluno' });
+        } else {
+            res.status(200).json({ message: 'Aluno deletado com sucesso' });
+        }
+    });
+});
+
+
 
 app.listen(8005, () => console.log("Servidor Ligou na porta 8005"));

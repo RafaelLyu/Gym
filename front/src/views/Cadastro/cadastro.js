@@ -1,58 +1,54 @@
-import { View, Text, TextInput, Button, StyleSheet, Image, Pressable, TouchableOpacity } from 'react-native'; // Importe Button de 'react-native'
-import React, { useState} from 'react';
+import { View, Text, TextInput, Button, StyleSheet, CheckBox } from 'react-native';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faUser, faLock, faEnvelope, faCalendarDays , faMobile } from '@fortawesome/free-solid-svg-icons';
-
-
+import { faUser, faLock, faEnvelope, faCalendarDays, faMobile } from '@fortawesome/free-solid-svg-icons';
 
 export default function CadastroScreen() {
     const [nome, setNome] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
     const [telefone, setTelefone] = useState('');
-    const [date, setDate] = useState(new Date());
-    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    const [feedbackMessage, setFeedbackMessage] = useState('');
+    const [isProfessor, setIsProfessor] = useState(false);
 
     const isCadastroDisabled = !email || !password || !nome;
 
-
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShowDatePicker(false);
-        setDate(currentDate);
-    };
-
-    const showDatepicker = () => {
-        setShowDatePicker(true);
-    };
-
-
-    const createUser = async (nome, email, telefone, data, password) => {
+    const createUser = async (nome, email, telefone, data, password, roleid) => {
         try {
-            const hashedPassword = await bcrypt.hash(password, 10);
             const Data1 = {
-                nome, email, telefone, data, password: hashedPassword
+                nome, email, telefone, data, password, roleid
             };
-            await fetch("http://192.168.0.12:8005/api/cadastro", {
+            await fetch("http://10.12.156.139:8005/api/cadastro", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(Data1)
             });
-            console.log("Cadastro realizado com sucesso");
+            setFeedbackMessage("Cadastro realizado com sucesso!");
+            resetInputs();
         } catch (error) {
-            console.error('Erro ao cadastrar usuário:', error);
+            setFeedbackMessage("Erro ao cadastrar usuário.");
         }
     };
 
+    const resetInputs = () => {
+        setNome('');
+        setPassword('');
+        setEmail('');
+        setTelefone('');
+        setDate(new Date().toISOString().split('T')[0]);
+        setIsProfessor(false);
+    };
+
     const handleSave = () => {
-        createUser(nome, email, telefone, date.toISOString().split('T')[0], password);
+        const roleid = isProfessor ? 2 : 1;
+        createUser(nome, email, telefone, date, password, roleid);
     };
 
     return (
         <View style={styles.container}>
-
             <View style={styles.introducao}>
                 <Text style={styles.Textintroducao}>Cadastro</Text>
                 <Text style={styles.SubTextintroducao}>Sua Jornada Começa Aqui</Text>
@@ -67,7 +63,7 @@ export default function CadastroScreen() {
                 />
                 <TextInput
                     style={styles.textInput}
-                    placeholder='Digite seu Nome'
+                    placeholder='Nome do Usuário'
                     value={nome}
                     onChangeText={setNome}
                 />
@@ -82,7 +78,7 @@ export default function CadastroScreen() {
                 />
                 <TextInput
                     style={styles.textInput}
-                    placeholder='Digite seu E-mail'
+                    placeholder='E-mail'
                     value={email}
                     onChangeText={setEmail}
                 />
@@ -97,7 +93,7 @@ export default function CadastroScreen() {
                 />
                 <TextInput
                     style={styles.textInput}
-                    placeholder='Digite seu Telefone'
+                    placeholder='Telefone'
                     value={telefone}
                     onChangeText={setTelefone}
                 />
@@ -110,18 +106,13 @@ export default function CadastroScreen() {
                     size={15}
                     style={styles.inputIcon}
                 />
-                <TouchableOpacity onPress={showDatepicker} style={styles.textInput}>
-                    <Text style={styles.dateText}>{date.toLocaleDateString()}</Text>
-                </TouchableOpacity>
-            </View>
-            {showDatePicker && (
-                <DateTimePicker
+                <TextInput
+                    style={styles.textInput}
+                    type="date"
                     value={date}
-                    mode="date"
-                    display="spinner"
-                    onChange={onChange}
+                    onChangeText={setDate}
                 />
-            )}
+            </View>
 
             <View style={styles.inputContainer}>
                 <FontAwesomeIcon
@@ -139,15 +130,25 @@ export default function CadastroScreen() {
                 />
             </View>
 
+            <View style={styles.inputContainer}>
+                <CheckBox
+                    value={isProfessor}
+                    onValueChange={setIsProfessor}
+                />
+                <Text style={styles.checkboxLabel}>Cadastrar como professor</Text>
+            </View>
+
+            {feedbackMessage ? <Text style={styles.feedbackText}>{feedbackMessage}</Text> : null}
+
             <View style={styles.signInButtonContainer}>
                 <Button
                     style={styles.signInButton}
                     title='Cadastrar'
                     onPress={handleSave}
                     disabled={isCadastroDisabled}
+                    color='#32cd32'
                 />
             </View>
-
         </View>
     );
 }
@@ -157,14 +158,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFFFFF',
         position: 'relative',
-    },
-    topImageContainer: {
-        width: "100%",
-        height: 180,
-    },
-    topImage: {
-        width: "100%",
-        height: "100%",
     },
     introducao: {
         marginBottom: 40,
@@ -180,7 +173,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: "400",
         letterSpacing: 1.5,
-        color: "#447da9",
+        color: "#32cd32",
     },
     inputContainer: {
         backgroundColor: '#F8F8FF',
@@ -206,6 +199,18 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 5,
         color: "#BEBEBE",
+    },
+    checkboxLabel: {
+        flex: 1,
+        color: "#BEBEBE",
+        paddingLeft: 10,
+        alignContent:'center',
+        width: "100%"
+    },
+    feedbackText: {
+        textAlign: 'center',
+        marginVertical: 10,
+        color: 'green',
     },
     signInButtonContainer: {
         justifyContent: 'center',

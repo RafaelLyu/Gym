@@ -8,8 +8,7 @@ const LoginScreen = ({ navigation, route }) => {
   const { login } = useAuth();
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); // Estado para armazenar a mensagem de erro
-
+  const [errorMessage, setErrorMessage] = useState(''); 
   const isLoginDisabled = !email || !password;
 
   const handleLogin = async () => {
@@ -27,7 +26,7 @@ const LoginScreen = ({ navigation, route }) => {
       </View>
 
       <View style={styles.introducao}>
-        <Text style={styles.Textintroducao}>Academia</Text>
+        <Text style={styles.Textintroducao}>Like Fitness Gym</Text>
         <Text style={styles.SubTextintroducao}>Sua Jornada Começa Aqui</Text>
       </View>
       <View style={styles.inputContainer}>
@@ -71,9 +70,13 @@ const LoginScreen = ({ navigation, route }) => {
           title='Entrar'
           onPress={handleLogin}
           disabled={isLoginDisabled}
+          color='#32cd32'
         />
       </View>
       {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+      <View style={styles.BottomImageContainer}>
+        <Image source={require("../../../assets/VectorBottom.png")} style={styles.BottomImage } />
+      </View>
     </View>
   );
 };
@@ -103,7 +106,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: "400",
     letterSpacing: 1.5,
-    color: "#447da9"
+    color: '#32cd32'
   },
   inputContainer: {
     backgroundColor: '#F8F8FF',
@@ -151,8 +154,8 @@ const styles = StyleSheet.create({
     left: 0
   },
   BottomImage: {
-    height: 300,
-    width: 200
+    height: 200,
+    width: 100,
   },
   errorText: {
     color: 'red',

@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 
 import HomeScreen from '../views/Home/home';
 import PerfilScreen from '../views/Perfil/perfil';
-import { useTheme } from '../themes/themeContext'; // Importa o contexto do tema
+import { useTheme } from '../themes/themeContext'; 
 import { lightTheme, darkTheme } from '../themes/themes';
 
 const Tab = createBottomTabNavigator();

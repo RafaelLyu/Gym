@@ -1,22 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, FlatList } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome6';
 import Geolocation from '@react-native-community/geolocation';
-import { useUser } from '../../user/user'; // Importando o contexto do usuário
-
-
+import { useUser } from '../../user/user'; 
 import ModalSerie from '../../modal/modalSerie';
 import ModalCalendar from '../../modal/modalCalendar';
-import { useTheme } from '../../themes/themeContext'; // Importa o contexto do tema
+import { useTheme } from '../../themes/themeContext'; 
+
+const lightTheme = {
+  background: '#FFFFFF',
+  backgroundAlternativo: '#F0F0F0',
+  text: '#000000',
+  icon: '#000000',
+  separator: '#DDDDDD',
+};
+
+const darkTheme = {
+  background: '#000000',
+  backgroundAlternativo: '#303030',
+  text: '#FFFFFF',
+  icon: '#FFFFFF',
+  separator: '#505050',
+};
 
 export default function HomeScreen() {
-  const { userId } = useUser(); // Obtendo dados do usuário do contexto
-  const { theme: currentTheme } = useTheme(); // Obtendo o tema atual e garantindo que está sendo usado corretamente
-  const [modalCalendar, setModalCalendar] = useState(false);  // Modal calendário
-  const [modalSerie, setModalSerie] = useState(false); // Modal de série
-  const [modalData, setModalData] = useState([]); // Dados da série
-  const [groupedWorkouts, setGroupedWorkouts] = useState({}); // Dados dos treinos agrupados por nome
-  const [isWithinTolerance, setIsWithinTolerance] = useState(false); // Estado 
+  const { userId } = useUser(); 
+  const { theme } = useTheme(); 
+  const currentTheme = theme === 'light' ? lightTheme : darkTheme;
+  const [modalCalendar, setModalCalendar] = useState(false);  
+  const [modalSerie, setModalSerie] = useState(false); 
+  const [modalData, setModalData] = useState([]); 
+  const [groupedWorkouts, setGroupedWorkouts] = useState({}); 
+  const [isWithinTolerance, setIsWithinTolerance] = useState(false); 
 
   useEffect(() => {
     if (!userId) {
@@ -24,10 +39,10 @@ export default function HomeScreen() {
       return;
     }
 
-    fetch(`http://192.168.0.12:8005/api/workoutExercises?userId=${userId}`)
+    fetch(`http://10.12.156.139:8005/api/workoutExercises?userId=${userId}`)
       .then(response => response.json())
       .then(data => {
-        console.log('Dados recebidos:', data); // Debug dos dados recebidos
+        console.log('Dados recebidos:', data); 
         const groupedData = groupWorkoutsByName(data);
         setGroupedWorkouts(groupedData);
       })
@@ -51,13 +66,9 @@ export default function HomeScreen() {
     }, {});
   };
 
-  const targetLocation = { lat: -22.852672105683173, lng: -43.46786505738011 };
-  const tolerance = 1000000; // Tolerância em metros
-
-
   useEffect(() => {
-    const targetLocation = { lat: -23.55052, lng: -46.633308 }; // Substitua com as coordenadas de destino
-    const tolerance = 50; // Tolerância em metros
+    const targetLocation = { lat: -22.852672105683173, lng: -43.46786505738011 };
+    const tolerance = 1000000000000000000; // Tolerância em metros
 
     const watchId = Geolocation.watchPosition(
       position => {
@@ -100,7 +111,6 @@ export default function HomeScreen() {
   };
 
   const handlePress = (exercises) => {
-    console.log('Exercícios selecionados:', exercises); // Debug dos exercícios selecionados
     setModalData(exercises);
     setModalSerie(true);
   };
@@ -109,17 +119,15 @@ export default function HomeScreen() {
     <ScrollView showsVerticalScrollIndicator={false} style={[styles.container, { backgroundColor: currentTheme.background }]}>
       <View style={styles.rowContainer}>
         <View style={styles.calendarButtonContainer}>
-          <Icon name='calendar' size={25} color={currentTheme.icon} onPress={() => setModalCalendar(true)} />
+          <Icon name='calendar-days' size={25} color={currentTheme.icon} onPress={() => setModalCalendar(true)} />
         </View>
         {isWithinTolerance && (
-          <View style={[{marginStart: 16, borderRadius:10,}, {backgroundColor:currentTheme.backgroundAlternativo}]}>
+          <View style={[styles.presenceContainer, {backgroundColor: currentTheme.backgroundAlternativo}]}>
             <Text style={[styles.alertText, { color: currentTheme.text }]}>Está na academia?</Text>
-
             <View style={styles.alertContainer}>
               <Text style={[styles.alertText, { color: currentTheme.text }]}>Marque sua presença !</Text>
-              <Icon name='face-smile-wink' size={22} color='#000000' style={{marginEnd:10, backgroundColor:'yellow', borderRadius:500}}/>
+              <Icon name='face-smile-wink' size={22} color='#000000' style={styles.smileIcon} />
             </View>
-
           </View>
         )}
       </View>
@@ -135,7 +143,7 @@ export default function HomeScreen() {
             >
               <Text style={styles.TouchableText}>{workoutName}</Text>
             </TouchableOpacity>
-            <View style={styles.separator} />
+            <View style={[styles.separator, {backgroundColor: currentTheme.separator}]} />
           </View>
         )}
         contentContainerStyle={styles.flatListContent}
@@ -156,7 +164,6 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  //Views
   container: {
     flex: 1,
     gap: 20,
@@ -178,12 +185,9 @@ const styles = StyleSheet.create({
     gap: 8,
     marginStart: 10,
   },
-  serieContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 60,
-    marginTop: 20,
+  presenceContainer: {
+    marginStart: 16,
+    borderRadius: 10,
   },
   workoutContainer: {
     marginBottom: 20, 
@@ -191,20 +195,10 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: 'gray',
     marginVertical: 20,
   },
   flatListContent: {
     paddingTop: 20,
-  },
-
-  touchableCalendar: {
-    borderRadius: 25,
-    borderWidth: 1,
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   touchableSerie: {
     borderRadius: 20,
@@ -216,19 +210,20 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     width: "50%",
   },
-
   TouchableText: {
     fontSize: 15,
     fontWeight: 'bold',
     color: '#0C0F14',
-    textAlign: 'center', // Centralizar o texto
+    textAlign: 'center',
   },
   alertText: {
     fontSize: 16,
     marginVertical: 15,
-    marginStart: 10
-
+    marginStart: 10,
+  },
+  smileIcon: {
+    marginEnd: 10,
+    backgroundColor: 'yellow',
+    borderRadius: 50,
   },
 });
-
-

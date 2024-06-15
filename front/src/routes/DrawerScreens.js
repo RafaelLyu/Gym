@@ -8,14 +8,14 @@ import AvaliacaoScreen from '../views/Avaliacao/avaliacao';
 import ExerciciosScreen from '../views/Exercicios/exercicios';
 import ContatosScreen from '../views/Contatos/contatos';
 import CadastroScreen from '../views/Cadastro/cadastro'
-
+import AlunosScreen from '../views/alunos/aluno';
 
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import {useTheme} from '../themes/themeContext'; // Modo light/dark
+import {useTheme} from '../themes/themeContext'; 
 import {lightTheme, darkTheme } from '../themes/themes';
 
 import ModalLofoff from '../modal/modalLogoff';
-import ModalProfilePic from '../modal/modalProfilePic'; // Importar o modal de seleção de foto
+import ModalProfilePic from '../modal/modalProfilePic'; 
 
 import defaultImage from '../../assets/foto1.png';
 import {useUser} from '../user/user';
@@ -28,14 +28,15 @@ const icons = {
   'Metas e Avaliação': 'medal',
   Exercicios: 'dumbbell',
   Contatos: 'phone',
-  'Cadastro Aluno': 'pen-to-square'
+  'Cadastro Aluno': 'pen-to-square',
+  Alunos: 'user-graduate'
 };
 
 function CustomDrawerContent(props) {
   const {userNome} = useUser();
-  const [modalLogoff, setModalLogoff] = useState(false); // Modal Logoff
+  const [modalLogoff, setModalLogoff] = useState(false); 
   
-  const [profilePic, setProfilePic] = useState(defaultImage); // Estado para a foto de perfil
+  const [profilePic, setProfilePic] = useState(defaultImage); 
   const [modalVisible, setModalVisible] = useState(false); 
 
 
@@ -138,7 +139,7 @@ export default function DrawerScreens() {
             },
             headerTitle: () => (
               <Image
-                source={require('../../assets/logo.webp')} // Substitua pelo caminho correto da sua logo
+                source={require('../../assets/logo.webp')} 
                 style={styles.logo}
               />
             ),
@@ -161,6 +162,7 @@ export default function DrawerScreens() {
           </>
         ) : (
           <>
+          <Drawer.Screen name="Alunos" component={AlunosScreen} />
             <Drawer.Screen name="Exercicios" component={ExerciciosScreen} />
             <Drawer.Screen name="Cadastro Aluno" component={CadastroScreen}  />  
           </>

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Picker, Alert } from 'react-native';
-import { useTheme } from '../../themes/themeContext'; // Importe o hook useTheme
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, TextInput, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTheme } from '../../themes/themeContext'; 
 import { lightTheme, darkTheme } from '../../themes/themes';
 
 export default function AvaliacaoScreen() {
@@ -8,34 +9,62 @@ export default function AvaliacaoScreen() {
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
 
   const metas = [
-    { label: 'Emagrecer', valorDiario: "500 calorias por dia abaixo do seu gasto calórico total" }, 
-    { label: 'Ganhar Massa Muscular', valorDiario: "aumento de 300 calorias por dia" }, 
-    { label: 'Prática de Exercício', valorDiario: "em média 2000 calorias por dia" }, 
-    { label: 'Outra', valorDiario: 0 }, 
+    { label: 'Emagrecer', valorDiario: "500 calorias por dia abaixo do seu gasto calórico total", color: '#FF6347' }, 
+    { label: 'Ganhar Massa Muscular', valorDiario: "aumento de 300 calorias por dia", color: '#00BFFF' }, 
+    { label: 'Prática de Exercício', valorDiario: "em média 2000 calorias por dia", color: '#9ACD32' }, 
+    { label: 'Outra', valorDiario: '', color: '#9370DB' }, 
   ];
 
-  const [meta, setMeta] = useState('');
   const [metaSelecionada, setMetaSelecionada] = useState(null);
   const [imc, setIMC] = useState('');
   const [medidas, setMedidas] = useState({
-    altura: '',
-    peso: '',
-    "cintura ": '',
-    "abdomen ": '',
-    "pescoço ": '',
-    "torax ": '',
-    "quadril ": '',
-    "braço esq. ": '',
-    "braço dir. ": '',
-    "antebraço esq. ": '',
-    "antebraço dir. ": '',
-    "punho esq. ": '',
-    "punho dir. ": '',
-    "coxa esq. ": '',
-    "coxa dir. ": '',
-    "panturrilha esq. ": '',
-    "panturrilha dir. ": '',
+    altura : '',
+    peso : '',
+    cintura : '',
+    abdomen : '',
+    pescoco : '',
+    torax : '',
+    quadril : '',
+    bracoesq : '',
+    bracodir : '',
+    antebracoesq: '',
+    antebracodir: '',
+    punhoesq: '',
+    punhodir: '',
+    coxaesq: '',
+    coxadir: '',
+    panturrilhaesq: '',
+    panturrilhadir: '',
   });
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const savedMeta = await AsyncStorage.getItem('metaSelecionada');
+        const savedMedidas = await AsyncStorage.getItem('medidas');
+        const savedIMC = await AsyncStorage.getItem('imc');
+        if (savedMeta !== null) setMetaSelecionada(savedMeta);
+        if (savedMedidas !== null) setMedidas(JSON.parse(savedMedidas));
+        if (savedIMC !== null) setIMC(savedIMC);
+      } catch (error) {
+        Alert.alert('Erro', 'Falha ao carregar dados');
+      }
+    };
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    const saveData = async () => {
+      try {
+        await AsyncStorage.setItem('metaSelecionada', metaSelecionada || '');
+        await AsyncStorage.setItem('medidas', JSON.stringify(medidas));
+        await AsyncStorage.setItem('imc', imc);
+      } catch (error) {
+        Alert.alert('Erro', 'Falha ao salvar dados');
+      }
+    };
+    saveData();
+  }, [metaSelecionada, medidas, imc]);
 
   const calcularIMC = (peso, altura) => {
     const pesoFloat = parseFloat(peso);
@@ -52,15 +81,15 @@ export default function AvaliacaoScreen() {
   const colorByIMC = (imc) => {
     const imcFloat = parseFloat(imc);
     if (imcFloat < 18.5) {
-      return '#006400'; // Verde escuro para abaixo do peso
+      return '#006400'; 
     } else if (imcFloat >= 18.5 && imcFloat <= 24.9) {
-      return '#00FF00'; // Verde claro para peso saudável
+      return '#00FF00'; 
     } else if (imcFloat >= 25 && imcFloat <= 30) {
-      return '#FFFF00'; // Amarelo para sobrepeso
+      return '#FFFF00'; 
     } else if (imcFloat >= 30.1 && imcFloat <= 39.9) {
-      return '#FF0000'; // Vermelho para obeso
+      return '#FF0000'; 
     } else {
-      return '#800000'; // Vinho para obeso mórbido
+      return '#800000';
     }
   };
 
@@ -74,79 +103,58 @@ export default function AvaliacaoScreen() {
     setMedidas({ ...medidas, [key]: newValue });
   };
 
-  const handleMetaChange = (metaSelecionada) => {
-    setMeta(metaSelecionada);
-    const meta = metas.find(item => item.label === metaSelecionada);
+  const handleMetaChange = (meta) => {
     setMetaSelecionada(meta);
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const response = await fetch('https://sua-api-url.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          meta: metaSelecionada,
-          medidas: medidas,
-          imc: imc,
-        }),
-      });
-
-      if (response.ok) {
-        Alert.alert('Sucesso', 'Dados enviados com sucesso!');
-      } else {
-        Alert.alert('Erro', 'Falha ao enviar dados');
-      }
-    } catch (error) {
-      Alert.alert('Erro', 'Erro de rede');
-    }
   };
 
   return (
     <ScrollView contentContainerStyle={[styles.container, { backgroundColor: currentTheme.background }]}>
       <Text style={[styles.title, { color: currentTheme.text }]}>Avaliação</Text>
       <Text style={[styles.sectionTitle, { color: currentTheme.text }]}>Minha meta</Text>
-      <Picker
-        style={[styles.input, { color: currentTheme.text, backgroundColor: 'transparent'}]}
-        selectedValue={meta}
-        onValueChange={(itemValue) => handleMetaChange(itemValue)}
-      >
-        <Picker.Item label="Selecione a meta" value="" />
-        {metas.map((value, index) => (
-          <Picker.Item key={index} label={value.label} value={value.label} style={{ backgroundColor: 'transparent' }} />
+      <View style={styles.buttonContainer}>
+        {metas.map((meta, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[
+              styles.metaButton,
+              { 
+                backgroundColor: metaSelecionada === meta.label ? meta.color : currentTheme.translucentButtonBackground,
+                borderRadius: 5, 
+              },
+            ]}
+            onPress={() => handleMetaChange(meta.label)}
+          >
+            <Text style={[styles.buttonText, { color: currentTheme.text }]}>{meta.label}</Text>
+          </TouchableOpacity>
         ))}
-      </Picker>
+      </View>
       {metaSelecionada && (
         <Text style={[styles.result, { color: currentTheme.text }]}>
-          Consumo calórico diário médio: {metaSelecionada.valorDiario} "consulte um nutricionista"
+          Consumo calórico diário médio: {metas.find(item => item.label === metaSelecionada)?.valorDiario} "consulte um nutricionista"
         </Text>
       )}
       <Text style={[styles.sectionTitle, { color: currentTheme.text }]}>Medidas Corporais</Text>
       <View style={styles.inputRow}>
         <Text style={[styles.label, { color: currentTheme.text }]}>Altura:</Text>
-        <Picker
-          style={[styles.picker, { color: currentTheme.text }]}
-          selectedValue={medidas.altura}
-          onValueChange={(itemValue) => handleInputChange('altura', itemValue)}
-        >
-          {Array.from({ length: 161 }, (_, i) => (i + 120)).map((value) => (
-            <Picker.Item key={value} label={`${value} cm`} value={value.toString()} style={{ backgroundColor: 'transparent' }} />
-          ))}
-        </Picker>
+        <TextInput
+          style={[styles.textInput, { color: currentTheme.text, backgroundColor: 'transparent' }]}
+          value={medidas.altura}
+          onChangeText={(value) => handleInputChange('altura', value)}
+          keyboardType="numeric"
+          placeholder="cm"
+          placeholderTextColor={currentTheme.placeholder}
+        />
       </View>
       <View style={styles.inputRow}>
         <Text style={[styles.label, { color: currentTheme.text }]}>Peso:</Text>
-        <Picker
-          style={[styles.picker, { color: currentTheme.text }]}
-          selectedValue={medidas.peso}
-          onValueChange={(itemValue) => handleInputChange('peso', itemValue)}
-        >
-          {Array.from({ length: 301 }, (_, i) => (i + 20)).map((value) => (
-            <Picker.Item key={value} label={`${value} kg`} value={value.toString()} style={{ backgroundColor: 'transparent' }} />
-          ))}
-        </Picker>
+        <TextInput
+          style={[styles.textInput, { color: currentTheme.text, backgroundColor: 'transparent' }]}
+          value={medidas.peso}
+          onChangeText={(value) => handleInputChange('peso', value)}
+          keyboardType="numeric"
+          placeholder="kg"
+          placeholderTextColor={currentTheme.placeholder}
+        />
       </View>
       <TouchableOpacity style={[styles.button, { backgroundColor: currentTheme.buttonBackground }]} onPress={handleCalcularIMC}>
         <Text style={[styles.buttonText, { color: currentTheme.buttonText }]}>Calcular IMC</Text>
@@ -190,27 +198,21 @@ export default function AvaliacaoScreen() {
           return (
             <View key={key} style={styles.inputRow}>
               <Text style={[styles.label, { color: currentTheme.text }]}>{key}:</Text>
-              <Picker
-                style={[styles.picker, { color: currentTheme.text }]}
-                selectedValue={value}
-                onValueChange={(itemValue) => handleInputChange(key, itemValue)}
-              >
-                {Array.from({ length: 301 }, (_, i) => (i + 20)).map((value) => (
-                  <Picker.Item key={value} label={`${value} cm`} value={value.toString()} style={{ backgroundColor: 'transparent' }} />
-                ))}
-              </Picker>
+              <TextInput
+                style={[styles.textInput, { color: currentTheme.text, backgroundColor: 'transparent' }]}
+                value={value}
+                onChangeText={(itemValue) => handleInputChange(key, itemValue)}
+                keyboardType="numeric"
+                placeholder="cm"
+                placeholderTextColor={currentTheme.placeholder}
+              />
             </View>
           );
         }
       })}
-      <TouchableOpacity style={[styles.button, { backgroundColor: currentTheme.buttonBackground }]} onPress={handleSubmit}>
-        <Text style={[styles.buttonText, { color: currentTheme.buttonText }]}>Enviar</Text>
-      </TouchableOpacity>
     </ScrollView>
   );
 }
-
-// Estilos
 
 const styles = StyleSheet.create({
   container: {
@@ -233,6 +235,34 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    marginLeft: 20, // Margem esquerda
+    marginRight: 20, // Margem direita
+  },
+  metaButton: {
+    width: '35%',
+    aspectRatio: 2,
+    borderRadius: 4, // Aqui está o tamanho das bordas dos botões de metas
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  buttonText: {
+    fontSize: 14, // Reduzido o tamanho da fonte
+    textAlign: 'center',
+  },
+  result: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 10,
+    textAlign: 'center',
+  },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -244,10 +274,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
-  picker: {
+  textInput: {
     flex: 2,
     fontSize: 14,
-    backgroundColor: 'transparent',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    textAlign: 'center',
   },
   button: {
     backgroundColor: '#32CD32',
@@ -256,18 +288,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  result: {
-    marginTop: 10,
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 10,
-    textAlign: 'center',
   },
   infoRow: {
     flexDirection: 'row',
