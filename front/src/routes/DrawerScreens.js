@@ -1,6 +1,6 @@
-import React, {useState, useEffect } from 'react';
-import {View, Image, Button, Text, StyleSheet, TouchableOpacity, Modal, Switch } from 'react-native';
-import { createDrawerNavigator} from "@react-navigation/drawer";
+import React, { useState, useEffect } from 'react';
+import { View, Image, Text, StyleSheet, TouchableOpacity, Modal, Switch } from 'react-native';
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import HomeTabs from './HomeTabs';
@@ -18,10 +18,9 @@ import ModalLofoff from '../modal/modalLogoff';
 import ModalProfilePic from '../modal/modalProfilePic'; 
 
 import defaultImage from '../../assets/foto1.png';
-import {useUser} from '../user/user';
+import { useUser } from '../user/user';
 
 const Drawer = createDrawerNavigator();
-
 
 const icons = {
   Home: 'house',
@@ -38,7 +37,6 @@ function CustomDrawerContent(props) {
   
   const [profilePic, setProfilePic] = useState(defaultImage); 
   const [modalVisible, setModalVisible] = useState(false); 
-
 
   const { theme, toggleTheme } = useTheme();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
@@ -64,7 +62,7 @@ function CustomDrawerContent(props) {
   return (
     <View style={[styles.drawerContainer, { backgroundColor: currentTheme.background }]}>
       <View style={styles.navagationContainer}>
-      <View style={styles.rowContainer}>
+        <View style={styles.rowContainer}>
           <TouchableOpacity onPress={changeProfilePic}>
             <Image source={profilePic} style={styles.profilePic} />
           </TouchableOpacity>
@@ -118,14 +116,13 @@ function CustomDrawerContent(props) {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         setProfilePic={setProfilePic}
-
       />
     </View>
   );
 }
 
 export default function DrawerScreens() {
-  const { userRole} = useUser();
+  const { userRole } = useUser();
   const { theme } = useTheme();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
   return (
@@ -183,8 +180,8 @@ const styles = StyleSheet.create({
     marginTop: 30,
     gap: 10
   },
-  settingsContainer:{
-    gap:20
+  settingsContainer: {
+    gap: 20
   },
   rowContainer: {
     flexDirection: 'row',
@@ -207,7 +204,6 @@ const styles = StyleSheet.create({
     width: '100%', 
     backgroundColor: '#373737',
     marginVertical: 20, 
-    
   },
   profilePic: {
     width: 50,
@@ -215,10 +211,8 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   // Botões
-  logo:{
-    width:100,
-    height:100
+  logo: {
+    width: 100,
+    height: 100
   }
-
 }); 
-

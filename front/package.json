@@ -49,7 +49,8 @@
     "react-native-svg": "15.2.0",
     "react-native-web": "~0.19.10",
     "react-navigation": "^5.0.0",
-    "sqlite": "^5.1.1"
+    "sqlite": "^5.1.1",
+    "expo-checkbox": "~3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0"

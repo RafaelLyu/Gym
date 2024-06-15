@@ -134,7 +134,10 @@ export default function ExerciciosScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollViewContainer}>
+        <Text style={[styles.sectionTitle,]}>Criar Série</Text>
+        <View style={styles.separator}/>
+
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Nome do Aluno:</Text>
           <TextInput
@@ -175,10 +178,11 @@ export default function ExerciciosScreen() {
         </View>
         {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
         {successMessage ? <Text style={styles.successText}>{successMessage}</Text> : null}
-        <View style={styles.submitButtonContainer}>
-          <Button title="Submit" onPress={handleSubmit} disabled={!memberId} />
-        </View>
+        
       </ScrollView>
+      <View style={styles.submitButtonContainer}>
+        <Button title="Salvar" color='#32CD32' onPress={handleSubmit} disabled={!memberId} />
+      </View>
     </View>
   );
 }
@@ -186,10 +190,14 @@ export default function ExerciciosScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:'#F0F0F0'
   },
   scrollViewContainer: {
     paddingVertical: 20,
     paddingHorizontal: 10,
+    gap:10,
+    backgroundColor:'#F0F0F0'
+
   },
   inputContainer: {
     marginBottom: 20,
@@ -201,7 +209,7 @@ const styles = StyleSheet.create({
   textInput: {
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 15,
     padding: 8,
     height: 40,
   },
@@ -209,20 +217,28 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    textAlign:'center',
+    marginVertical:10,
+    
   },
   exercisesContainer: {
     height: 300, 
   },
   exercisesScrollView: {
     paddingVertical: 10,
+    backgroundColor:'#DCDCDC',
+    borderRadius:10
+
   },
   listContainer: {
     marginBottom: 20,
+    marginStart:5
   },
   partTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    marginStart:5
   },
   exerciseRow: {
     flexDirection: 'row',
